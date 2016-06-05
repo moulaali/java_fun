@@ -23,6 +23,12 @@ public class FallbackOnSlowWorkers {
 
   public static void main(String[] args) {
     System.out.println("Got response : " + getResultsFromTwoSources());
+    // Output is going to be :
+    // Hello from task workerA . I started my job now
+    // Timed out waiting for taskA. Falling back.
+    // Hello from task workerB . I started my job now
+    // Hello from task workerB . I am done
+    // Got response : response_from_workerB
   }
 
   private static String getResultsFromTwoSources() {
@@ -34,7 +40,7 @@ public class FallbackOnSlowWorkers {
     try {
       return workerAFuture.get(2, TimeUnit.SECONDS);
     } catch (TimeoutException toe) {
-      // Fallback to backup
+      System.out.println("Timed out waiting for taskA. Falling back.");
       Future<String> workerBFuture = COMPLETION_SERVICE.submit(workerB);
       try {
         String result = COMPLETION_SERVICE.take().get();
