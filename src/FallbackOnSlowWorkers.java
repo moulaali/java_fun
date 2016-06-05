@@ -43,7 +43,7 @@ public class FallbackOnSlowWorkers {
       System.out.println("Timed out waiting for taskA. Falling back.");
       Future<String> workerBFuture = COMPLETION_SERVICE.submit(workerB);
       try {
-        String result = COMPLETION_SERVICE.take().get();
+        String result = COMPLETION_SERVICE.take().get();  // Wait for either one to return
         // Cancel both futures to return the resources
         workerAFuture.cancel(true /** interrupt if running */);
         workerBFuture.cancel(true /** interrupt if running */);
