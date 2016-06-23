@@ -1,0 +1,47 @@
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Arrays;
+ 
+/**
+ * Question from codefights.com
+ * 
+ * Finds the ratings whose average is below threshold.
+ * 
+ * Difficulty level : Trivial
+ * 
+ * @author Moulaali Shaik
+ */
+public class CodeFightsThreshold {
+
+  public static void main(String[] args) {
+    int ratings[][] = {
+      {3, 4},
+      {3, 3, 3, 4},
+      {4}
+    };
+    // Prints [1]
+    System.out.println(Arrays.toString(ratingThreshold(3.5, ratings)));
+  }
+
+  private static int[] ratingThreshold(double threshold, int[][] ratings) {
+      List<Integer> list = new ArrayList<>();
+      int k = 0;
+      for (int i = 0; i < ratings.length; i++) {
+          double sum = 0;
+          for (int j = 0; j < ratings[i].length; j++) {
+              sum += ratings[i][j];
+          }
+          if ((sum/ratings[i].length) < threshold) {
+              list.add(i);
+          }
+      }
+
+      // Convert to fixed array. We need these hacky conversion
+      // as the question asked to return an array with right size.
+      int[] ratingsToReview = new int[list.size()];
+      for (int i = 0; i < list.size(); i++) {
+          ratingsToReview[i] = list.get(i).intValue();
+      }
+      return ratingsToReview;
+  }
+}
