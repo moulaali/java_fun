@@ -1,0 +1,60 @@
+package practice;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Reordering Arrays
+ *
+ * Given arrays A, and a shuffle of that array B - say:
+ * A = [5, 2, 3, 1, 4]
+ * B = [3, 5, 2, 4, 1]
+ * Apply the same transformation to another array C. So if C was:
+ * C = [10, 11, 12, 13, 14]
+ * The transformed array that needs to be returned would be:
+ * D = [12, 10, 11, 14, 13]
+ */
+public class ShuffleInSameOrder {
+  public static void main(String[] args) throws Exception {
+    int[] arrayA = {5, 2, 3, 1, 4};
+    int[] arrayB = {3, 5, 2, 4, 1};
+    int[] arrayC = {10, 11, 12, 13, 14};
+
+    // Prints [12, 10, 11, 14, 13]
+    System.out.println("arrayD :" + Arrays.toString(shuffleSameOrder(arrayA, arrayB, arrayC)));
+  }
+
+  private static int[] shuffleSameOrder(int[] arrayA, int[] arrayB, int[] arrayC) throws Exception {
+
+    int[] arrayD = new int[arrayC.length];
+
+    if (arrayA.length != arrayB.length) {
+      throw new Exception("arrayA and arrayB are not same size");
+    }
+
+    if (arrayC.length != arrayA.length) {
+      throw new Exception("arrayC is not same size as reference arrays");
+    }
+
+    // Map the arrayB elements to the positions
+    Map<Integer, Integer> newPositions = new HashMap<>(arrayA.length);
+    for (int i = 0; i < arrayB.length; i++) {
+      if (newPositions.get(arrayB[i]) != null) {
+        throw new Exception("arrayB has duplicates.");
+      }
+      newPositions.put(arrayB[i], i);
+    }
+
+    // Place elements from C to D using the reference map
+    for (int i = 0; i < arrayC.length; i++) {
+      Integer shufflePosition = newPositions.get(arrayA[i]);
+      if (shufflePosition == null) {
+        throw new Exception(arrayA[i] + " from arrayA is missing in B");
+      }
+      arrayD[shufflePosition] = arrayC[i];
+    }
+
+    return arrayD;
+  }
+}
