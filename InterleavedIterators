@@ -1,0 +1,65 @@
+package coding;
+
+import com.google.common.base.Joiner;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+/**
+ * If we had the iterators i and j iterating over the elements [ia, ib, ic] and [ja, jb]
+ * respectively, the order in which the flattened iterator should emit the elements would be
+ * [ia, ja, ib, jb, ic].
+ *
+ * @author Moulaali Shaik
+ */
+public class InterleavedIterators implements Iterator<Integer> {
+
+  private final LinkedList<Iterator<Integer>> iteratorsQueue;
+
+  public static void main(String[] args) {
+    List<Integer> l1 = new ArrayList<>(Arrays.asList(1, 2, 3));
+    List<Integer> l2 = new ArrayList<>(Arrays.asList(4, 5, 6, 7));
+    InterleavedIterators interleavedIterator =
+        new InterleavedIterators(new ArrayList<>(Arrays.asList(l1.iterator(), l2.iterator())));
+
+    // Prints 1,4,2,5,3,6
+    System.out.print(Joiner.on(",").join(interleavedIterator));
+  }
+
+  InterleavedIterators(List<Iterator<Integer>> iterators) {
+    this.iteratorsQueue = new LinkedList<>(iterators);
+  }
+
+  @Override
+  public boolean hasNext() {
+    for (Iterator<Integer> iterator : iteratorsQueue) {
+      if (iterator.hasNext()) {
+        return true;
+      } else {
+        iteratorsQueue.remove();
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public Integer next() {
+    if (!hasNext()) {
+      throw new NoSuchElementException();
+    }
+
+    while (!iteratorsQueue.isEmpty()) {
+      Iterator<Integer> head = iteratorsQueue.removeFirst();
+      if (head.hasNext()) {
+        Integer nextElement = head.next();
+        iteratorsQueue.addLast(head);
+        return nextElement;
+      }
+    }
+
+    throw new NoSuchElementException();  // We should never be here.
+  }
+}
