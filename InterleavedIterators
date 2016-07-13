@@ -60,6 +60,6 @@ public class InterleavedIterators implements Iterator<Integer> {
       }
     }
 
-    throw new NoSuchElementException();  // We should never be here.
+    throw new IllegalStateException();  // We should never be here.
   }
 }
