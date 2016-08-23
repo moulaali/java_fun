@@ -42,7 +42,7 @@ public class PrintLevelOrderTree {
       return String.valueOf(data);
     }
 
-    public String toLevelOrder() {
+    String toLevelOrder() {
       StringBuilder outputBuilder = new StringBuilder();
       LinkedList<Node> queue = new LinkedList<>();
 
