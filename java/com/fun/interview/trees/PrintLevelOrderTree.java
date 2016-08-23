@@ -8,7 +8,7 @@ import java.util.Queue;
 /**
  * A demo class to print a tree in level order.
  * 
- * <P> The BFS travel is managed using a {@link Queue}. The completion of level
+ * <P>The BFS travel is managed using a {@link Queue}. The completion of level
  * is tracked using a special marker node.
  * 
  * @author Moulaali Shaik
