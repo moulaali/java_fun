@@ -3,6 +3,9 @@ import java.util.Arrays;
 /**
  * This program does a three way partitioning aka Dutch National Flag problem.
  * 
+ * <P> Also see:
+ * http://www.geeksforgeeks.org/sort-an-array-of-0s-1s-and-2s/
+ *
  * @author Moulaali Shaik
  */
 public class DNF {
