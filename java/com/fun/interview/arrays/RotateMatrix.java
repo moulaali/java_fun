@@ -29,6 +29,7 @@ public class RotateMatrix {
       {9, 10, 11, 12},
       {13, 14, 15, 16},
     };
+    
     rotate(input);
     System.out.println("Matrix after rotation : \n" + Arrays.deepToString(input).replaceAll("],", "],\n"));
   }
