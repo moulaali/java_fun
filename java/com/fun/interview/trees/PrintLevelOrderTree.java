@@ -73,7 +73,6 @@ public class PrintLevelOrderTree {
   }
   
   public static void main(String[] args) {
-    
     // Build a Tree manually
     Node root = new Node(1);
     
@@ -96,7 +95,6 @@ public class PrintLevelOrderTree {
       .addChild(level2Child2);
     level1Child3
       .addChild(level2Child3);
-    
     
     // Print breadth-wise
     // This should print :
