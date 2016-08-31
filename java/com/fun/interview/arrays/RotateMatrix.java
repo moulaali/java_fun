@@ -49,7 +49,7 @@ public class RotateMatrix {
     }
   }
 
-  /** Abstract a Matrix elements with it's corresponding coordinates */
+  /** Abstract a Matrix element with it's corresponding coordinates */
   private static void swap(int[][] input, MatrixElement first, MatrixElement second) {
     int temp = input[first.i][first.j];
     input[first.i][first.j] = input[second.i][second.j];
