@@ -3,8 +3,9 @@ import java.util.Arrays;
  * This program rotate's a matrix 90 degrees in clockwise direction.
  *
  * <p>We do this rotating each outer layer of the matrix at a time. Once a layer is rotated, we do
- * the same with the layer nested under it. Run time is O(n^2)
- *
+ * the same with the layer nested under it. Run time is O(n^2). This problem is similar to rotating
+ * the pixels in a given image.
+ * 
  * @author Moulaali Shaik
  */
 public class RotateMatrix {
