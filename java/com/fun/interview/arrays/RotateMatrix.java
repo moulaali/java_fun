@@ -1,5 +1,3 @@
-package com.google.wireless.android.messaging.analysis.hb.checkin;
-
 import java.util.Arrays;
 /**
  * This program rotate's a matrix 90 degrees in clockwise direction.
@@ -50,15 +48,13 @@ public class RotateMatrix {
     }
   }
 
-  /**
-   * Abstract a Matrix elements with it's corresponding coordinates
-   */
+  /** Abstract a Matrix elements with it's corresponding coordinates */
   private static void swap(int[][] input, MatrixElement first, MatrixElement second) {
     int temp = input[first.i][first.j];
     input[first.i][first.j] = input[second.i][second.j];
     input[second.i][second.j] = temp;
   }
-  
+
   static class MatrixElement {
     final int i;
     final int j;
