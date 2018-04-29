@@ -55,5 +55,4 @@ public class LongestRecurringCharacters {
         
         return longestChar;
     }
-    
 }
