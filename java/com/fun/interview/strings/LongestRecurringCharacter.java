@@ -11,6 +11,8 @@ import java.util.regex.*;
  * <P> Idea is to keep track of frequency of current max and current char. Every time
  * the char switch happens, check and update the global max. This approach does not
  * need extra memory and can be in O(n) time
+ *
+ * @author Moulaali Shaik
  */
 public class LongestRecurringCharacters {
 
