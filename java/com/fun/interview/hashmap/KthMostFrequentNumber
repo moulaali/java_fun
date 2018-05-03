@@ -1,0 +1,52 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+
+/**
+ * Find kth most frequent number
+ * 
+ * <P>Approach is to create a frequency map in O(n) time and then
+ * create a heap in O(n) time and then do k exractMax() calls in
+ * O(klogN) time
+ */
+public class FindKthFrequentNumber {
+
+    public static void main(String[] args) {
+        int[] input = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5};
+        System.out.println(getKthFrequentNumber(input, 2));  // 4
+        System.out.println(getKthFrequentNumber(input, 3));  // 3
+        System.out.println(getKthFrequentNumber(input, 5));  // 1 or 2
+        System.out.println(getKthFrequentNumber(input, 6));  // -1
+    }
+    
+    static int getKthFrequentNumber(int[] input, int k) {
+        Map<Integer, Integer> frequencyMap = new HashMap<>();
+        for (int i = 0; i < input.length; i++) {
+            frequencyMap.put(input[i], frequencyMap.getOrDefault(input[i], 0) + 1);
+        }
+        
+        if (k > frequencyMap.size()) {
+            return -1;
+        }
+        
+        PriorityQueue<Map.Entry<Integer, Integer>> maxHeap = new PriorityQueue<Map.Entry<Integer,Integer>>(
+            frequencyMap.size(), new Comparator<Map.Entry<Integer, Integer>>() {
+                @Override
+		        public int compare(Map.Entry<Integer, Integer> e1, Map.Entry<Integer, Integer> e2) {
+			        return e2.getValue().compareTo(e1.getValue());
+		        }
+            });
+        maxHeap.addAll(frequencyMap.entrySet());
+        
+        
+        for (int i = 0; i < (k - 1) ; i++) {
+            System.out.println("Removing " + maxHeap.remove());
+        }
+        return maxHeap.remove().getKey();
+    }
+}
