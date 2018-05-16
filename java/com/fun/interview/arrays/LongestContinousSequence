@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 
 
 /**
- * Find kth most frequent number
+ * Find the longest continous sequence of numbers
  * 
- * <P>Approach is to create a frequency map in O(n) time and then
- * create a heap in O(n) time and then do k exractMax() calls in
- * O(klogN) time
+ * <P>Approach involves creating a copy of elements in hashset. Then
+ * going over each element and removing all the immediately previous numbers
+ * and immediate next numbers. Keep a count of removals and compare with max.
  */
-public class KthFrequentNumber {
+public class LongestContinousSequence {
 
     public static void main(String[] args) {
         int[] input = {100, 3, 101, 4, 2, 1, 102, 200, 103, 201, 104, 7, 105 };
