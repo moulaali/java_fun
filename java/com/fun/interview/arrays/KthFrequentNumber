@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * create a heap in O(n) time and then do k exractMax() calls in
  * O(klogN) time
  */
-public class FindLongestSequenceCountInUnsortedArray {
+public class KthFrequentNumber {
 
     public static void main(String[] args) {
         int[] input = {100, 3, 101, 4, 2, 1, 102, 200, 103, 201, 104, 7, 105 };
