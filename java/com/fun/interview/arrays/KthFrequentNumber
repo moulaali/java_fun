@@ -54,8 +54,7 @@ public class KthFrequentNumber {
             }
         }
         
-        System.out.println("Max Star number: " + maxStartNumber);
+        System.out.println("Max Start number: " + maxStartNumber);
         return maxCount;
     }
-    
 }
