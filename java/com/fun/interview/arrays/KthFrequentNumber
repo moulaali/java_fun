@@ -1,0 +1,61 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+
+/**
+ * Find kth most frequent number
+ * 
+ * <P>Approach is to create a frequency map in O(n) time and then
+ * create a heap in O(n) time and then do k exractMax() calls in
+ * O(klogN) time
+ */
+public class FindLongestSequenceCountInUnsortedArray {
+
+    public static void main(String[] args) {
+        int[] input = {100, 3, 101, 4, 2, 1, 102, 200, 103, 201, 104, 7, 105 };
+        System.out.println(getLongestSequenceCount(input));  // 6: 100, 101, 102, 103, 104, 105
+    }
+    
+    static int getLongestSequenceCount(int[] input) {
+        Set<Integer> set = new HashSet<>();
+        int maxCount = 0;
+        int maxStartNumber = -1;
+        
+        for (int i : input) {
+            set.add(i);
+        }
+        
+        for (int i : input) {
+            int leftNeighbor = i - 1;
+            int rightNeighbor = i + 1;
+            int count = 1;
+            int startNumber = i;
+            
+            while(set.contains(leftNeighbor)) {
+                set.remove(leftNeighbor);
+                leftNeighbor--;
+                count++;
+            }
+            
+            while (set.contains(rightNeighbor)) {
+                set.remove(rightNeighbor);
+                rightNeighbor++;
+                count++;
+            }
+            
+            if (count > maxCount) {
+                maxCount = count;  
+                maxStartNumber = startNumber;
+            }
+        }
+        
+        System.out.println("Max Star number: " + maxStartNumber);
+        return maxCount;
+    }
+    
+}
