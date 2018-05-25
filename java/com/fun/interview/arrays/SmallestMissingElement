@@ -1,0 +1,85 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+
+/**
+ * Finds smallest missing element in a list
+ */
+public class SmallestMissingElement {
+
+    public static void main(String[] args) {
+    
+        int[] testWithMissingElementInMiddle = {5, 1, 0, 11, 7, 13, 2, 3, 4};
+        int[] testWithMissingElementInEnd = {0, 2, 1, 4, 3, 6};
+        int[] testWithMissingElementInStart = {11, 2, 4, 5, 3, 1, 7, 6, 10, 8, 9};
+        
+        
+        System.out.println("Smallest Missing Element : " + getSmallestMissingElement(testWithMissingElementInMiddle, 0, testWithMissingElementInMiddle.length - 1, 0) + "\n\n");  // 6
+        System.out.println("Smallest Missing Element : " + getSmallestMissingElement(testWithMissingElementInEnd, 0, testWithMissingElementInEnd.length - 1, 0));  // 6
+        System.out.println("Smallest Missing Element : " + getSmallestMissingElement(testWithMissingElementInStart, 0, testWithMissingElementInStart.length - 1, 0));  // 6
+    }
+    
+    private static int getSmallestMissingElement(int[] input, int low, int high, int lowerBound) {
+        System.out.println("Called with subarray " + Arrays.toString(Arrays.copyOfRange(input, low, high + 1)) + " low= " + low + " high=" + high + " lowerBound: " + lowerBound);
+        
+        // One or zero element
+        if (low >= high) {
+            return high + 1;
+        }   
+        
+        // Partition with middle element
+        int pivotIndex = partition(input, low, high);
+        System.out.println("Post partition array : " + Arrays.toString(Arrays.copyOfRange(input, low, high + 1)) + " low " + low + " high " + high + " pivotIndex " + pivotIndex + "\n\n");
+        
+        if (pivotIndex < input[pivotIndex]) {
+            // Search left sub-array
+            return getSmallestMissingElement(input, low, pivotIndex - 1, lowerBound);
+        } else {
+            // Search right subarray
+            return getSmallestMissingElement(input, pivotIndex + 1, high, input[pivotIndex] + 1);
+        }
+    }
+    
+    
+    static int partition (int arr[], int low, int high)
+    {
+        // pivot (Element to be placed at right position)
+        
+        int pivotIndex = low + (int) (high-low)/2;
+        int pivot = arr[pivotIndex];
+
+        System.out.println("Partitioning with pivotIndex: " + pivotIndex + " element: " + pivot);
+
+        
+        
+        swap(arr, pivotIndex, high);
+     
+        int i = (low - 1);  // Index of smaller element
+    
+        for (int j = low; j <= high- 1; j++)
+        {
+            // If current element is smaller than or
+            // equal to pivot
+            if (arr[j] <= pivot)
+            {
+                i++;    // increment index of smaller element
+                swap(arr, i, j);
+            }
+        }
+        swap(arr, i + 1, high);
+        
+        return (i + 1);
+    }
+    
+    
+    static void swap(int[] input, int i, int j) {
+        int temp = input[i];
+        input[i] = input[j];
+        input[j] = temp;
+    }
+}
