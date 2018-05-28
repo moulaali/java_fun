@@ -8,31 +8,31 @@ import java.util.stream.Collectors;
 
 
 /**
- * Divide the set into two partitions so that the difference in the sums is minimum
+ * Zero-One knapsack algorithm
  */
-public class KnapSack {
+public class ZeroOneKnapSack {
 
     public static void main(String[] args) {
-    
-        Item item1 = new Item(60, 10);
-        Item item2 = new Item(100, 20);
-        Item item3 = new Item(120, 30);
         
-        Item[] items = {item1, item2, item3};
-        int maxWeight = 50;
+        Item[] testItems1 = {new Item(60, 10), new Item(100, 20), new Item(120, 30)};
+        System.out.println(knapsack(testItems1, 50));  // 220
         
-        System.out.println(knapsack(items, 220));  
+        Item[] testItems2 = {new Item(100, 10), new Item(280, 40), new Item(120, 20)};
+        System.out.println(knapsack(testItems2, 60));  // 400
     }
     
     private static int knapsack(Item[] items, int maxWeight) {
         int[][] maxValue = new int[maxWeight + 1][items.length];
-        for (int w = 1; w < maxWeight; w++) {
+        for (int w = 1; w <= maxWeight; w++) {
             for (int j = 1; j < items.length; j++) {
-                if (items[j].weight > maxWeight) {
-                    continue;  // Too heavy
+                if (items[j].weight > w) {
+                    // Too heavy, choose skipping
+                    maxValue[w][j] = maxValue[w][j-1]; 
+                } else {
+                    // Pick between value of skipping : we get more capacity for all other items
+                    // or selecting: we get w-items_wieght for other items but add items_value
+                    maxValue[w][j] = Math.max(maxValue[w][j-1], maxValue[w-items[j].weight][j - 1] + items[j].value);
                 }
-                
-                maxValue[w][j] = Math.max(maxValue[w][j-1], maxValue[(w-items[j].weight][j - 1] + items[j].value);
             }
         }
         
