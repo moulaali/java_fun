@@ -13,11 +13,19 @@ import java.util.stream.Collectors;
 public class BstSuccessorAndPredecessor {
 
     public static void main(String[] args) {
+        // Reference Tree : http://btechsmartclass.com/DS/U5_T1.html
         Node root = buildTestTree();
         
         root.print();
         
-        System.out.println(Node.predecessor(root, 10).data);
+        System.out.println("Predecessor of 10: " + Node.predecessor(root, 10));
+        System.out.println("Predecessor of 28: " + Node.predecessor(root, 28));
+        System.out.println("Predecessor of 40: " + Node.predecessor(root, 40));
+        System.out.println("Predecessor of 50: " + Node.predecessor(root, 50));
+        
+        System.out.println("Successor of 25: " + Node.successor(root, 25));
+        System.out.println("Successor of 12: " + Node.successor(root, 12));
+        System.out.println("Successor of 1: " + Node.successor(root, 1));
     }
     
     private static class Node {
@@ -49,8 +57,13 @@ public class BstSuccessorAndPredecessor {
             return new Node(Integer.MIN_VALUE);
         }
         
-         boolean isMarkerNode() {
+        boolean isMarkerNode() {
             return (data == Integer.MIN_VALUE);
+        }
+        
+        @Override
+        public String toString() {
+            return String.valueOf(this.data);
         }
         
         static Node predecessor(Node start, int data) {
@@ -61,7 +74,6 @@ public class BstSuccessorAndPredecessor {
             }
             
             if (current.data == data) {
-                System.out.println("Found target");
                 if (current.left != null) {
                     // Right most child of LST
                     Node rmc = current.left;
@@ -70,17 +82,55 @@ public class BstSuccessorAndPredecessor {
                     }
                     return rmc;
                 } else {  
-                    // No left child. Lowest ancestor whose Right child is ancestor
+                    // No left child. Lowest ancestor whose Right child is an ancestor
+                    while (current.parent != null) {
+                        Node parent = current.parent;
+                        if (parent.right == current) {
+                            return parent;
+                        }
+                        current = current.parent;
+                    } 
+                    return null;
                 }
             } else if (current.data > data) {
-                System.out.println("Not found. going left at current" + current.data);
                 return predecessor(current.left, data);
             } else {
-                System.out.println("Not found. going right at current" + current.data);
                 return predecessor(current.right, data);
             }
+        }
+        
+        static Node successor(Node start, int data) {
+            // Mirror image code of predecessor
+            Node current = start;
             
-            return null;
+            if (start == null) {
+                return null;
+            }
+            
+            if (current.data == data) {
+                if (current.right != null) {
+                    // Left most child of RST
+                    Node rmc = current.right;
+                    while(rmc.left != null) {
+                        rmc = rmc.left;
+                    }
+                    return rmc;
+                } else {  
+                    // No right child. Lowest ancestor whose left child is an ancestor
+                    while (current.parent != null) {
+                        Node parent = current.parent;
+                        if (parent.left == current) {
+                            return parent;
+                        }
+                        current = current.parent;
+                    } 
+                    return null;
+                }
+            } else if (current.data > data) {
+                return successor(current.left, data);
+            } else {
+                return successor(current.right, data);
+            }
         }
         
         void print() {
@@ -123,13 +173,13 @@ public class BstSuccessorAndPredecessor {
     
     static Node buildTestTree() {
         
+        // Reference : http://btechsmartclass.com/DS/U5_T1.html
+        
         Node root_25 = new Node(25);
         
+        // Left subtree
         Node node_20 = new Node(20);
-        Node node_36 = new Node(36);
         root_25.addLeft(node_20);
-        root_25.addRight(node_36);
-        
         
         Node node_10 = new Node(10);
         Node node_22 = new Node(22);
@@ -150,6 +200,29 @@ public class BstSuccessorAndPredecessor {
         
         Node node_15 = new Node(15);
         node_12.addRight(node_15);
+        
+        
+        // Right subtree
+        Node node_36 = new Node(36);
+        root_25.addRight(node_36);
+        
+        Node node_30 = new Node(30);
+        Node node_40 = new Node(40);
+        node_36.addLeft(node_30);
+        node_36.addRight(node_40);
+        
+        Node node_28 = new Node(28);
+        node_30.addLeft(node_28);
+        
+        Node node_38 = new Node(38);
+        Node node_48 = new Node(48);
+        node_40.addLeft(node_38);
+        node_40.addRight(node_48);
+        
+        Node node_45 = new Node(45);
+        Node node_50 = new Node(50);
+        node_48.addLeft(node_45);
+        node_48.addRight(node_50);
         
         return root_25;
     }
