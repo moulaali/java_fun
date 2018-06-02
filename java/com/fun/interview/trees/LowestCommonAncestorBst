@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 
 
 /**
- * Find inorder successor and predecessor
+ * Find LCA in BST. 
  */
-public class BstSuccessorAndPredecessor {
+public class LowestCommonAncestorBst {
 
     public static void main(String[] args) {
         // Reference Tree : http://btechsmartclass.com/DS/U5_T1.html
