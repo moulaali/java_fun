@@ -18,7 +18,6 @@ public class LargestRectangleInHistogram
     // histogram with n bars
     static int getMaxArea(int hist[], int n) 
     {
-       
        int maxArea = 0;
        int i = 0;
        Stack<Integer> s = new Stack<>();
@@ -27,7 +26,6 @@ public class LargestRectangleInHistogram
            if (s.empty() || (hist[i] >= hist[s.peek()])) {
                System.out.println("Element at i=" + i + " is " + hist[i] + " is larger than top or emptyStack. pushing to stack");
                s.push(i++);
-               
            } else {
                System.out.println("Element at i=" + i + " is " + hist[i] + " is smaller than top. Compute the new area with top bar");
                // Hit a smaller bar. Find the previous bars in stack and compute their max area
