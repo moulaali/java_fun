@@ -1,0 +1,60 @@
+/**
+ * Finds largest subarray with sum k
+ * 
+ * Idea is to compute cummulative sum from start for each element and
+ * store sum->index hash. If at any element, target_sum - current_sum
+ * exist in hash, means we found a sub-array with sum. 
+ * 
+ * To compute the max, we keep checking and overriding the max seen so
+ * far
+ */
+import java.util.Map;
+import java.util.HashMap;
+ 
+class maxSubarrayWithSum
+{
+    /* Returns true if the there is a subarray of arr[] with sum equal to
+       'sum' otherwise returns false.  Also, prints the result */
+    static int subArraySum(int arr[], int targetSum) 
+    {
+        int curSum = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        int maxSubArrayLength = 0;
+        
+        for (int i = 0; i < arr.length; i++) {
+            curSum += arr[i];
+            
+            if (curSum == targetSum) {
+                System.out.println("Found subarray with start=0 and end=" + i);
+                if (i + 1 > maxSubArrayLength) {
+                    maxSubArrayLength = i + 1;
+                    System.out.println("Updated maxSubArrayLength to " + maxSubArrayLength);
+
+                }
+                map.put(curSum, i);
+                continue;
+            }
+            
+            Integer diffSumIndex = map.get(curSum - targetSum);
+            if (diffSumIndex != null) {
+                System.out.println("Found subarray with start=" + (diffSumIndex + 1) + " and end=" + i);
+                if ((i - diffSumIndex) > maxSubArrayLength) {
+                    maxSubArrayLength = (i - diffSumIndex);
+                    System.out.println("Updated maxSubArrayLength to " + maxSubArrayLength);
+                }
+            }
+            
+            map.put(curSum, i);
+        }
+        
+        return maxSubArrayLength; 
+    }
+ 
+    public static void main(String[] args) 
+    {
+        int arr[] = {10, 5, 2, 7, 1, 9, 15, 1, 1, 1, 1, 1, 5, 5};
+        int n = arr.length;
+        int sum = 15;
+        System.out.println("Max length subarray: " + subArraySum(arr, sum));
+    }
+}
