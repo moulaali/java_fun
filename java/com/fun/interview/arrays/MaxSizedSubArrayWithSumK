@@ -1,11 +1,11 @@
 /**
  * Finds largest subarray with sum k
  * 
- * Idea is to compute cummulative sum from start for each element and
+ * <p>Idea is to compute cummulative sum from start for each element and
  * store sum->index hash. If at any element, target_sum - current_sum
  * exist in hash, means we found a sub-array with sum. 
  * 
- * To compute the max, we keep checking and overriding the max seen so
+ * <p>To compute the max, we keep checking and overriding the max seen so
  * far
  */
 import java.util.Map;
