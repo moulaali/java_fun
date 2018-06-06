@@ -55,6 +55,6 @@ class maxSubarrayWithSum
         int arr[] = {10, 5, 2, 7, 1, 9, 15, 1, 1, 1, 1, 1, 5, 5};
         int n = arr.length;
         int sum = 15;
-        System.out.println("Max length subarray: " + subArraySum(arr, sum));
+        System.out.println("Max length subarray: " + subArraySum(arr, sum));  // Size 7 [7:13] sub-array
     }
 }
