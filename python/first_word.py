@@ -9,5 +9,5 @@ command_output = """
 # extract words
 words = re.findall(r'(\w+)', command_output)
 
-# first word
+# first word. Output will be : "21"
 print("First word in command output is : " + words[0])
