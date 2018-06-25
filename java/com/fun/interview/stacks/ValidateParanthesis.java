@@ -18,7 +18,6 @@ class ValidateParathesis {
         
         boolean valid = true;
         
-
         for (int i = 0; i < input.length(); i++) {
             Character c = input.charAt(i);
             if (c == '{' || c == '[' || c == '(') {
@@ -34,9 +33,10 @@ class ValidateParathesis {
         }
         
         if (!stack.isEmpty()) {
-            System.out.println("Stack is not empty " + stack.pop());
+            System.out.println("Stack is not empty. Additional chars: " + stack.pop());
             valid = false;
         }
+     
         System.out.println("valid: " + valid);
     }
 }
