@@ -2,6 +2,7 @@
  * Validate Paranthesis
  * 
  * <P>[{()}] : Valid
+ * [{()}]{ : Invalid
  */
 import java.util.*;
 
@@ -10,12 +11,10 @@ class ValidateParathesis {
     public static void main(String[] args)  {
         String input = "[{()}]{";
         Stack<Character> stack = new Stack<Character>();
-        
         Map<Character, Character> match = new HashMap<>();
         match.put('{', '}');
         match.put('(', ')');
         match.put('[', ']');
-        
         boolean valid = true;
         
         for (int i = 0; i < input.length(); i++) {
