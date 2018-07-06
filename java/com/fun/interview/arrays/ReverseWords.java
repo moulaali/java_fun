@@ -38,8 +38,6 @@ class ReverseWords {
                 System.out.println("char: " + c + " is space. and isStackEmpty" + stack.isEmpty());
                 if (!stack.isEmpty()) {
                     // Append the word to answer 
-                    
-                        
                     popStack(sb, stack);
                 } 
             }
