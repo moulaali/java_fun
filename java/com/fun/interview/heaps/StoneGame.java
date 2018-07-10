@@ -32,7 +32,7 @@ class StoneGame {
             
             Integer next = h.poll();
             
-            Integer result = Math.floorMod(large, next);
+            Integer result = (large - next);
             System.out.println("Smashed " + large + " and " + next + " result " + result);
             
             if (result > 0) {
