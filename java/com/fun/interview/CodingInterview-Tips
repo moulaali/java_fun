@@ -1,0 +1,8 @@
+* Move Fast. Do not spend too much time for previous projects and experience. 
+* Jump to coding problem as soon as you can
+* Coding
+  ** Keep simple names. (length, input, start, end, max, etc)
+  ** Log important flow conditions with var values
+  ** start with simple case and make it work. iterate for complexity
+  ** Manually verify the logic to make sure there are no bugs
+ 
