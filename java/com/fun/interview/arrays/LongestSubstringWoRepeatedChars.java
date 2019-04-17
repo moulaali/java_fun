@@ -4,10 +4,13 @@ Given a string, find the length of the longest substring without repeating chara
 Examples:
 
 Given "abcabcbb", the answer is "abc", which the length is 3.
-
 Given "bbbbb", the answer is "b", with the length of 1.
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a 
+subsequence and not a substring.
 
-Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+Approach (sliding window): Use two pointers for current window. if new chars are not repeating, happily extend the window. 
+when you find a collison, move begin to colliding char. one optimization is to use the index of the char 
+in map value. this will allow us to quickly move the begin to new window.
  */
  
 import java.util.*;
