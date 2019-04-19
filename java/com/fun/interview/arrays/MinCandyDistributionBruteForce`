@@ -1,0 +1,81 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+
+/**
+ * 
+For example, assume her students' ratings are [4, 6, 4, 5, 6, 2]. 
+She gives the students candy in the following minimal amounts: [1, 2, 1, 2, 3, 1]. 
+She must buy a minimum of 10 candies.
+ 
+ 
+Brute force approach: 
+
+1/ Give one to each
+2/ Iterate till no adjustments are needed
+   - Check left neighbor, if required give one more than left guy
+   - Check right neighbor, if required give one more than right guy
+3/ It apparently needs only O(n) adjustments (WHY ??)
+
+Complexity O(n^2) and O(n) space.
+
+ */
+class FirstLastElementSortedArray {
+    
+    static int loopCount = 0;
+    
+    public static void main(String[] args) {
+        int[] ratings = {4, 6, 4, 5, 6, 2};
+        int minCandies = 0;
+        int[] candies = new int[ratings.length];
+       
+        
+        int loop = 0;
+       
+       // Give 1 each
+       for (int i = 0; i < ratings.length; i++) {
+           candies[i] = 1;
+       }
+       
+       boolean adjusted = true;
+       
+       while(adjusted && (loop++) < 100 ) {
+           adjusted = false;
+           
+           for (int i = 0; i < ratings.length; i++) {
+               
+               // check left
+               if (i > 0 
+               && (ratings[i] > ratings[i - 1])
+               && (candies[i] <= candies[i-1])) {
+                   System.out.printf("Giving one more candy i=%d (%d)since left guy has lower rating and more(or equal) candies \n", i, (candies[i - 1] + 1));
+                   candies[i] = candies[i - 1] + 1;
+                   
+                   adjusted = true;
+               }
+               
+               // check right
+               if ((i < ratings.length - 1)
+                 && (ratings[i] > ratings[i + 1])
+                 && (candies[i] <= candies[i + 1])) {
+                   System.out.printf("Giving one more candy i=%d (%d)since right guy has lower rating and more(or equal) candies \n", i, (candies[i + 1] + 1));  
+                   candies[i] = candies[i + 1] + 1;
+                   
+                   adjusted = true;
+                 }
+           }
+           
+       }
+       
+       
+        // Add up
+        for (int i = 0; i < ratings.length; i++) {
+            System.out.printf("%d, ", candies[i]);
+            minCandies += candies[i];
+        }
+        
+        System.out.printf("\nminCandies: %d\n", minCandies);
+        
+    }
+}
+
