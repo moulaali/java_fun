@@ -1,0 +1,59 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+
+/**
+ * 
+For example, assume her students' ratings are [4, 6, 4, 5, 6, 2]. 
+She gives the students candy in the following minimal amounts: [1, 2, 1, 2, 3, 1]. 
+She must buy a minimum of 10 candies.
+ 
+ 
+Brute force approach: 
+
+Complexity O(n) and O(n) space.
+
+ */
+class MinCandiesProblem {
+    
+    static int loopCount = 0;
+    
+    public static void main(String[] args) {
+        int[] ratings = {4, 6, 4, 5, 6, 2};
+        int minCandies = 0;
+        int[] candies = new int[ratings.length];
+       
+        
+        int loop = 0;
+       
+       // Give 1 each
+       Arrays.fill(candies, 1);
+       
+       // Give better than your left neighbor.
+       // Its ok to break right guy constraint
+       for (int i = 1; i < ratings.length; i++) {
+            if (ratings[i] > ratings[i - 1]) {
+                candies[i] = candies[i - 1] + 1;
+            }
+        }
+        
+    
+        // Give better than your right guy _and_ current candies (max)
+        // Current candies will always keep the left guy constraint
+        for (int i = ratings.length - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1]) {
+                candies[i] = Math.max(candies[i], candies[i + 1] + 1);
+            }
+        }
+       
+        // Add up
+        for (int i = 0; i < ratings.length; i++) {
+            System.out.printf("%d, ", candies[i]);
+            minCandies += candies[i];
+        }
+        
+        System.out.printf("\nminCandies: %d\n", minCandies);
+        
+    }
+}
+
