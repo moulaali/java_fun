@@ -24,7 +24,6 @@ public class YearWithLargestPopulation {
         int newPop = popMap.getOrDefault(j, 0) + 1;
         popMap.put(j, newPop);
 
-
         if (newPop > curMax) {
           System.out.printf("Found new max pop year %d with pop", j, newPop);
           curMax = newPop;
