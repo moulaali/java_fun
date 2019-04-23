@@ -3,13 +3,8 @@
  * 
  * Idea is to compute the max possible value that ends at a given index.
  * That value could be previous_max + value_at_i or value_at_i
- * 
- * 
- *
  */
- 
 import java.util.*;
-
 
 class MaxSubArray {
  
@@ -38,7 +33,6 @@ class MaxSubArray {
                 System.out.println("Found new global max: " + max + " at begin " + max_ending_here_begin + " and end : " + i);
             }
         }
-       
         
         System.out.println("Max subarray : " + max_begin + "-" + max_end + " and val=" + max);
     }
