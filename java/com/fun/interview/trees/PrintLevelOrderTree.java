@@ -1,5 +1,3 @@
-package fun;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,10 +6,7 @@ import java.util.Queue;
 /**
  * A demo class to print a tree in level order.
  * 
- * <P>The BFS travel is managed using a {@link Queue}. The completion of level
- * is tracked using a marker node.
- * 
- * @author Moulaali Shaik
+ * <P>The BFS travel is managed using a {@link Queue}.
  */
 public class PrintLevelOrderTree {
   
@@ -29,14 +24,6 @@ public class PrintLevelOrderTree {
       return this;
     }
     
-    static Node newMarkerNode() {
-      return new Node(Integer.MIN_VALUE);
-    }
-    
-    boolean isMarkerNode() {
-      return (data == Integer.MIN_VALUE);
-    }
-    
     @Override
     public String toString() {
       return String.valueOf(data);
@@ -48,24 +35,19 @@ public class PrintLevelOrderTree {
 
       // Eneque the root
       queue.add(this);
-      queue.add(newMarkerNode());
       
       while (!queue.isEmpty()) {
-        Node node = queue.removeFirst();
         
-        // Handle level completion
-        if (node.data == Integer.MIN_VALUE) {
-          outputBuilder.append("\n");
-          if (!queue.isEmpty()) {
-            queue.add(newMarkerNode());
-          }
-          continue;
+        int levelSize = queue.size();
+        
+        for (int i = 0; i < levelSize; i++) {
+            // Print this node and enequeue all the children
+            Node node = queue.removeFirst();
+            outputBuilder.append(node.toString());
+            queue.addAll(node.children);
         }
         
-        // Print this node and enequeue all the children
-        boolean lastNodeInLevel = (queue.peek() != null) && (queue.peek().isMarkerNode());
-        outputBuilder.append(node.toString() + (lastNodeInLevel ? "" : ", "));
-        queue.addAll(node.children);
+        outputBuilder.append("\n");
       }
       
       return outputBuilder.toString();
