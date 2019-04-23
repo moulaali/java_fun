@@ -1,0 +1,58 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 
+ * Find three elements that add up to sum
+ * 
+ * Ex:  {12, 3, 4, 1, 6, 9} and given sum is 24
+ * 12, 9, 3 is output
+ *
+ * Approach: iterate the list and fix the ith element and find two elements that add up to (Target-a[i])
+ * We can simply use a hashmap to find two elements.
+ */
+class ThreeSumProblem {
+    
+    public static void main(String[] args) {
+        int[] a = {12, 3, 4, 1, 6, 9};
+        int T = 14;
+        
+        boolean found = false;
+        
+        for (int i = 0; i < a.length; i++) {
+            
+            Map<Integer, Boolean> map = new HashMap<>();
+            int t = (T - a[i]);
+            System.out.printf("Trying to fix %d and find sum : %d \n", a[i], t);
+            
+            for (int j = 0 ; j < a.length; j++) { 
+                
+                // skip the element
+                if (j == i) {
+                    continue;
+                }
+                
+                if (map.get(t - a[j]) != null) {
+                    System.out.printf("Found: %d, %d and %d", a[i], a[j], (t - a[j]));
+                    found = true;
+                    break;
+                }
+                
+                map.put(a[j], true);
+            }
+            
+            if (found) {
+                break;
+            }
+        }  
+        
+        
+        if (!found) {
+            System.out.println("Not found");
+        }
+    }
+}
