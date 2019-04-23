@@ -1,0 +1,73 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 
+ * Find three elements that add up to sum
+ * 
+ * Approach: 
+ * - Sort the array 
+ * - Iterate over elements and fix the ith element
+ * - Now find two elements that add to T - a[i]. The two elements can be found by two pointers coming from
+ * opposite sides. if l+r > sum, r-- else l++
+ * 
+ * Ex:  {12, 3, 4, 1, 6, 9} and given sum is 24
+ * 12, 9, 3 is output
+ * 
+ * O(n log n) + O(n^2) = O(n ^2)
+ */
+class ThreeSumProblemWithOutMapUsingSorting {
+    
+    public static void main(String[] args) {
+        int[] a = {12, 3, 4, 1, 6, 9};
+        int T = 27;
+        
+        boolean found = false;
+        
+        Arrays.sort(a);
+        
+        for (int i = 0; i < a.length; i++) {
+            
+            int t = (T - a[i]);
+            System.out.printf("Trying to fix %d and find sum : %d \n", a[i], t);
+            
+            for (int l = 0, r = a.length - 1  ; l < r ; ) { 
+                
+                // skip the element
+                if (l == i) {
+                    l++;
+                    continue;
+                }
+                
+                if (r == i) {
+                    r--;
+                }
+                
+                if (a[l] + a[r] == t) {
+                    System.out.printf("Found %d, %d, %d \n", a[i], a[l], a[r]);
+                    found = true;
+                    break;
+                }
+                
+                if (a[l] + a[r] > t) {
+                    r--;
+                } else {
+                    l++;
+                }
+            }
+            
+            if (found) {
+                break;
+            }
+        }  
+        
+        
+        if (!found) {
+            System.out.println("Not found");
+        }
+    }
+}
