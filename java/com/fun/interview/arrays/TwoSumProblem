@@ -1,0 +1,34 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 
+ * Find two elements that add-up to a sum.
+ */
+class TwoSumProblem {
+    
+    public static void main(String[] args) {
+        int[] a = {2, 7, 11, 15};
+        int t = 19;
+        Map<Integer, Boolean> map = new HashMap<>();
+        boolean found = false;
+        
+        for (int i = 0 ; i < a.length; i++) {
+            if (map.get(t - a[i]) != null) {
+                System.out.printf("Found: %d and %d", a[i], (t - a[i]));
+                found = true;
+                break;
+            }
+            
+            map.put(a[i], true);
+        }
+        
+        if (!found) {
+            System.out.println("Not found");
+        }
+    }
+}
