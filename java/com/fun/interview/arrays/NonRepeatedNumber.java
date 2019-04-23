@@ -13,9 +13,7 @@ left neighbor should ne same. if it is even, it's right neighbor should be same.
  
 import java.util.*;
 
-
 class NonRepeatedNumber {
- 
     
     public static void main(String[] args)  {
         int[] input = {1, 1, 2, 3, 3, 5, 5};
