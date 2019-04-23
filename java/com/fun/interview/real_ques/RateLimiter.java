@@ -1,7 +1,6 @@
 /**
 * Implement a simple throttler that allows only x qps on per-client basis
 */
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
@@ -11,8 +10,6 @@ import java.util.HashMap;
 class RateLimiter
 {
     Map<String, LinkedList<Integer>> map = new HashMap<>();
-    
-    
     int max;
     
     public static void main(String[] args) {
