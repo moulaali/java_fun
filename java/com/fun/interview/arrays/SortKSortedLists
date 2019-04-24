@@ -1,0 +1,51 @@
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+/**
+ * Run time : nk * log(k)
+class SortKSortedLists {
+
+  public static void main(String[] args) {
+    int[][] a = {
+        {1, 4, 7, 88},
+        {3, 11, 18, 81},
+        {4, 6}
+    };
+
+    PriorityQueue<obj> pq = new PriorityQueue<obj>(new comparator());
+
+    // Add first elements to the pq
+    for (int i = 0; i < a.length; i++) {
+      pq.offer(new obj(a[i][0], i, 0));
+    }
+
+    while (!pq.isEmpty()) {
+      obj o = pq.remove();
+      System.out.printf("%d ", o.val);
+
+      if (a[o.index].length - 1 >  o.eIndex) {
+        // System.out.printf("Moving array : list: %d element %d list_len %d \n ", o.index, o.eIndex, a[o.index].length);
+        pq.offer(new obj(a[o.index][o.eIndex + 1], o.index, o.eIndex + 1));
+      }
+    }
+  }
+
+  static class obj {
+    int val;
+    int index;
+    int eIndex;
+
+    public obj(int val, int index, int eIndex) {
+      this.val = val;
+      this.index = index;
+      this.eIndex = eIndex;
+    }
+  }
+
+  static class comparator implements Comparator<obj> {
+    public int compare(obj o1, obj o2)
+    {
+      return o1.val - o2.val;
+    }
+  }
+}
