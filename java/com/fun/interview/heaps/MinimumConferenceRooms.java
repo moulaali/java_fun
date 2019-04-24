@@ -1,0 +1,81 @@
+import java.util.*;
+
+/**
+ * Given a set of meeting start and end timings. Find min of conf rooms.
+ *
+ * Approach:
+ *  - Sort by start time
+ *  - Take each meeting and check if conflicts with the meeting that is ending soon. use heap for this.
+ *  - If not, reuse the same room by replace the top of heap. if conflicts, assign a new room i.e. add to heap.
+ *  - At the end, the heap holds the largest set of meetings that are overlapping.
+ */
+public class MinimumConferenceRooms {
+
+  static int[][] a = {
+      {1, 10},
+      {2, 7},
+      {10, 20},
+      {3, 19},
+      {8, 12},
+      {11, 30}
+  };
+
+  public static void main(String[] args) {
+
+    // Store in objects
+    Mtg[] mtgs = new Mtg[a.length];
+    for (int i = 0;i < a.length; i++) {
+        mtgs[i] = new Mtg(a[i][0], a[i][1]);
+    }
+
+    // Sort by start times
+    Arrays.sort(mtgs, new Comparator<Mtg>() {
+        @Override
+        public int compare(Mtg m1, Mtg m2) {
+            return Integer.compare(m1.s, m2.s);
+        }
+    });
+
+    System.out.println("Post Sorting mtgs " + Arrays.deepToString(mtgs));
+
+
+    PriorityQueue<Mtg> pq = new PriorityQueue<Mtg>(new Comparator<Mtg>() {
+        @Override
+        public int compare(Mtg m1, Mtg m2) {
+            return Integer.compare(m1.e, m2.e);
+        }
+    });
+
+    for (int i = 0; i < mtgs.length; i++) {
+        Mtg endingSoon = pq.peek();
+
+        if (endingSoon == null || (mtgs[i].s < endingSoon.e)) {
+            // conflict or first guy. we need a new room
+            System.out.println("Mtg needs new room since all are busy " + mtgs[i]);
+        } else {
+            // start time >= endTime of soonest one
+            pq.poll();
+            System.out.println("Mtg reused " + endingSoon + " for " + mtgs[i]);
+        }
+
+        pq.offer(mtgs[i]);
+    }
+
+    System.out.printf("Min conf rooms : %d. Largest conflicting set:  %s", pq.size(), pq);
+  }
+
+  static class Mtg {
+      int s;
+      int e;
+
+      public Mtg(int s, int e) {
+          this.s = s;
+          this.e = e;
+      }
+
+      @Override
+      public String toString() {
+          return "[" + s + "," + e + "]";
+      }
+  }
+}
