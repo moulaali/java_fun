@@ -1,0 +1,77 @@
+import java.io.*;https://github.com/moulaali/java_fun
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList; 
+
+/**
+ *
+ * https://leetcode.com/problems/find-the-celebrity/
+ *
+Suppose you are at a party with n people (labeled from 0 to n - 1) and among them, there may exist one celebrity. The definition of a celebrity is that all the other n - 1 people know him/her but he/she does not know any of them.
+
+Now you want to find out who the celebrity is or verify that there is not one. The only thing you are allowed to do is to ask questions like: "Hi, A. Do you know B?" to get information of whether A knows B. You need to find out the celebrity (or verify there is not one) by asking as few questions as possible (in the asymptotic sense).
+
+You are given a helper function bool knows(a, b) which tells you whether A knows B. Implement a function int findCelebrity(n). There will be exactly one celebrity if he/she is in the party. Return the celebrity's label if there is a celebrity in the party. If there is no celebrity, return -1
+
+
+ * Approach: Two pass check. 
+ 
+ first pass : line the people up, check if first person knows second one. if he does, he is not celebrity. if he is, second person is not celebrity for sure. at the end we will have a "possible" celebrity
+ 
+ second pass: confirm that the guess is right by reasking everyone. 
+ this is because, we have not checked the probable one with everyone
+ in first pass
+
+*/
+class FindTheCelebrity {
+  public static void main(String[] args)  {
+   
+    CelebrityGraph celebrityGraph = new CelebrityGraph();
+    
+    // Find probable celebrity
+    int probable = 0;
+    
+    int partySize = celebrityGraph.getPartySize();
+    for (int i = 1; i < partySize; i++) {
+      if (celebrityGraph.knows(probable, i)) {
+        // probable knows i; so it cannot be celebrity
+        probable = i;
+      }  // if not, continue guessing probable as celebrity
+    }  
+    
+    // We need to recheck that everyone knows probable
+    boolean rightCelebrity = true;
+    for (int i = 0; i < partySize; i++) {
+      
+      if (i == probable) {
+        continue;
+      }
+      
+      if (!celebrityGraph.knows(i, probable)) {
+        rightCelebrity = false;
+        break;
+      }
+    }
+    
+    System.out.println("Celebrity " 
+                       + (rightCelebrity ? probable : "not found"));
+  }
+  
+  private static class CelebrityGraph {
+    private static final int[][] knowsMatrix = new int[][]{
+      // Person with 2 is celebrity 
+      {0, 0, 1, 0}, 
+      {0, 0, 1, 0}, 
+      {0, 0, 0, 0}, 
+      {0, 0, 1, 0}
+    };
+    
+    boolean knows(int i, int j) {
+      return (knowsMatrix[i][j] == 1);
+    }
+    
+    int getPartySize() {
+      return knowsMatrix.length;
+  }
+ }
+}
