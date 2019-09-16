@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 
 /**
 *
-*
 * https://leetcode.com/problems/happy-number/
 
 A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
@@ -41,11 +40,12 @@ class Solution {
         i = getSquareSum(i);
         j = getSquareSum(getSquareSum(j));  // simulate loop detection by moving the second pointer faster
         
-        if (i == 1) {
+        System.out.println("i = " + i + " j = " + j);
+        
+        if ((i == 1) || (j == 1)) {
           happy = true;
         }
         
-        System.out.println("i = " + i + " j = " + j);
         if (i == j) {
           System.out.println("Loop detected");
           break;
