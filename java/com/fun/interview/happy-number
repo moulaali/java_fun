@@ -1,0 +1,70 @@
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList; 
+
+/**
+*
+*
+* https://leetcode.com/problems/happy-number/
+
+A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
+
+Example: 
+
+Input: n = 19
+Output: True
+19 is Happy Number,
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
+1^2 + 0^2 + 0^2 = 1
+As we reached to 1, 19 is a Happy Number.
+
+Input: n = 20
+Output: False
+12 + 02 + 02 = 1
+*
+
+Approach : Trivially solvable by simple hashset (seen) and looping. Slightly interesting way is to use two counters. one that does once and the other that does it twice. kind of look faster pointer and slow pointer in loop detection. In this approach, we dont need the extra memory for list. We pay for computation though.
+
+*
+*/
+class Solution {
+  public static void main(String[] args)  {
+      int n = 19;
+      boolean happy = false;
+    
+      int i = n;
+      int j = n;
+      while(!happy) {
+        i = getSquareSum(i);
+        j = getSquareSum(getSquareSum(j));  // simulate loop detection by moving the second pointer faster
+        
+        if (i == 1) {
+          happy = true;
+        }
+        
+        System.out.println("i = " + i + " j = " + j);
+        if (i == j) {
+          System.out.println("Loop detected");
+          break;
+        }
+      }
+    
+    System.out.println(n + " is " + (happy ? "happy" : "not happy"));
+    
+  }
+  
+  static int getSquareSum(int n) {
+    int sum = 0;
+    
+    int i = n;
+    while (i != 0) {
+      sum += ((i % 10) * (i % 10));
+      i = i/10;
+    }
+    
+    return sum;
+  }
+}
