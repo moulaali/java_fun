@@ -1,0 +1,131 @@
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList;
+
+/**
+*
+* https://leetcode.com/problems/basic-calculator/
+
+Implement a basic calculator to evaluate a simple expression string.
+
+The expression string may contain open ( and closing parentheses ), the plus + or minus sign -, non-negative integers and empty spaces .
+
+Example 1:
+
+Input: "1 + 1"
+Output: 2
+Example 2:
+
+Input: " 2-1 + 2 "
+Output: 3
+Example 3:
+
+Input: "(1+(4+5+2)-3)+ (6+8)"
+Output: 23
+Note:
+You may assume that the given expression is always valid.
+Do not use the eval built-in library function.
+*
+* Approach: If no parathensis. keep popping and computing as we see digits. if parathesis. solve the sub-expression till we hit ')' and use
+* it same as we hit the digit.
+*
+*/
+class BasicCalculator {
+
+  static int currentPos = 0;
+
+  public static void main(String[] args) {
+   // String input = "1 + 1";
+   // String input = " 2-1 + 2 ";
+    // String input = "(1+(4+5+2)-3)+ (6+8)";
+    String input = "(1-(4+5+2)-3)+(6+8)";
+    System.out.println("Result " + evaluateSubExpression(input));
+ }
+
+
+  static int evaluateSubExpression(String input) {
+    ArrayDeque<Object> stack = new ArrayDeque<Object>();
+
+    System.out.println("Evaluating subexpression in " + input.substring(currentPos));
+
+    for (;currentPos < input.length(); currentPos++) {
+
+      Character ch = input.charAt(currentPos);
+
+      if (ch == ' ') {
+        continue;
+      }
+
+      if (isOperator(ch)) {
+        stack.push(ch);
+        continue;
+      }
+
+      // start of another sub-expression. evaluate till we hit )
+      // then compute and push back to stack
+      if (ch == '(') {
+        currentPos++;
+        int subExpr = evaluateSubExpression(input); // recurse
+        computeTop(subExpr, stack);
+
+        continue;
+      }
+
+      // we hit a digit. if there is something on stack. compute and push back again
+      if (isDigit(ch)) {
+        Integer digit = Character.getNumericValue(ch);
+        computeTop(digit, stack);
+
+        continue;
+      }
+
+      // we reached end of expression. return result so far
+      if (ch == ')') {
+        Integer result = (Integer) stack.pop();
+
+        System.out.println("Reached end of subexpression. Returning result " + result);
+        return result;
+      }
+    }
+
+    return (Integer) stack.pop();
+  }
+
+  static void computeTop(int top, ArrayDeque<Object> stack) {
+
+    if (stack.isEmpty()) {
+        stack.push(top);
+        return;
+    }
+
+    // Must be a operator. compute and push back
+    Character op = (Character) stack.pop();
+    Integer other = (Integer) stack.pop();
+
+    int res = compute(op, other, top);
+    System.out.println("Performed operation " + op +  " " + other + " " + top + " pushing result " + res);
+    stack.push(res);
+  }
+
+  static boolean isOperator(Character ch) {
+    return (
+      (ch == '+') ||
+      (ch == '-'));
+  }
+
+  static boolean isDigit(Character ch) {
+    return (ch >= '0' && ch <= '9');
+  }
+
+  static Integer compute(Character op, int first, int second) {
+    switch (op) {
+      case '+':
+        return first + second;
+      case '-':
+        return first - second;
+      default:
+        throw new RuntimeException("Unsupported operation found " + op);
+    }
+  }
+}
