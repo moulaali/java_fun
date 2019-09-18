@@ -19,6 +19,8 @@ import java.util.HashMap;
  *  first and second are disjoint
  *  first and second partially overlap
  *  first or second contain the other one
+ * 
+ * In each of the case, we can move one of A or B set. We can do the intersection in O(n) instead of O(n^2)
  */
 class IntervalIntersection {
     
