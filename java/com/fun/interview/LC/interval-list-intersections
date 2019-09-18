@@ -1,0 +1,155 @@
+package LC;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
+/**
+ * 
+ * Interval list intersection
+ * 
+ * https://leetcode.com/problems/interval-list-intersections/
+ * 
+ * Input: A = [[0,2],[5,10],[13,23],[24,25]], B = [[1,5],[8,12],[15,24],[25,26]]
+ * Output: [[1,2],[5,5],[8,10],[15,23],[24,24],[25,25]]
+ * 
+ * Approach : keep picking one from each interval and handle one of 3 cases :
+ *  first and second are disjoint
+ *  first and second partially overlap
+ *  first or second contain the other one
+ * 
+ * In each of the case, we can move one of A or B set. We can do the intersection in O(n) instead of O(n^2)
+ */
+class IntervalIntersection {
+    
+    public static void main(String[] args) {
+        int[][] intervals1 = {
+            {0, 2},
+            {5,10},
+            {13, 23},
+            {24, 25}
+        };
+        
+        int[][] intervals2 = {
+            {1, 5},
+            {8, 12},
+            {15, 24},
+            {25, 26}
+        };
+        
+        int[][] inter = new int[10][2];
+        int k = 0;
+        
+        int i = 0;
+        int j = 0;
+        
+        while (i < intervals1.length && j < intervals2.length) {
+            System.out.printf("Checking [%d-%d] and [%d-%d] \n", intervals1[i][0], intervals1[i][1], intervals2[j][0], intervals2[j][1]);
+            
+            int[] first = intervals1[i];
+            int[] second = intervals2[j];
+            
+            // case1:
+            // |----|
+            //         |-----| 
+            // s2 > e1
+            if (second[0] > first[1]) {
+                System.out.println("(case1) s2 > e1 : no overlap : moving first set");
+                i++;
+                continue;
+            }
+            
+            // case 2:
+            //            |------|
+            //  |------|
+            // s1 > e2
+            //
+            if (first[0] > second[1]) {
+                System.out.println("(case2) s1 > e2 : no overlap : moving second set");
+                j++;
+                continue; 
+            }
+            
+            // case 3:
+            // overlap
+            //    |---------------|
+            //          |----------------|
+            // s2 > s1 && e2 > e1
+            //
+            if (second[0] > first[0] 
+                && second[1] > first[1]) {
+                System.out.printf("(case3) s2 > s1 and e2 > e1  : overlap : moving first set and added [%d-%d\n]", second[0], first[1] );
+                inter[k][0] = second[0];
+                inter[k][1] = first[1];
+                
+                k++;
+                i++;
+                continue;   
+            }
+            
+            
+            // case 4:
+            // overlap
+            //                |---------------|
+            //          |----------------|
+            // s1 > s2 && e1 > e2
+            //
+            if (first[0] > second[0] 
+                && first[1] > second[1]) {
+                System.out.printf("(case4) s1 > s2 and e1 > e2  : verlap : moving second set and added [%d-%d]\n", first[0], second[1] );
+                inter[k][0] = first[0];
+                inter[k][1] = second[1];
+                
+                k++;
+                j++;
+                continue;   
+            }
+            
+            
+            //
+            // case 5: total overlap
+            // |----------------|
+            //     |------|
+            //
+            // s2 > s1 and e1 > e2
+            //
+            if (second[0] > first[0] 
+                && first[1] > second[1]) {
+                System.out.printf("(case5) s2 > s1 and e1 > e2  : total overlap : moving second set and added [%d-%d]\n", second[0], second[1]);
+                inter[k][0] = second[0];
+                inter[k][1] = second[1];
+                
+                k++;
+                j++;
+                continue;   
+            }
+            
+            
+            //
+            // case 6: total overlap
+            //    |------|
+            // |----------------|
+            //    
+            //
+            // s1 > s2 and e2 > e1
+            //
+            if (first[0] > second[0] 
+                && second[1] > first[1]) {  
+                System.out.printf("(case6) s1 > s2 and e2 > e1  : total overlap : moving first set and added [%d-%d]\n", first[0], first[1]);
+                inter[k][0] = second[0];
+                inter[k][1] = second[1];
+                
+                k++;
+                i++;
+                continue;   
+            }
+        }
+        
+        System.out.println("Overlapping : \n");
+        for (i = 0; i < k; i++){
+             System.out.printf(Arrays.toString(inter[i]));            
+        }
+    }
+}
