@@ -19,7 +19,6 @@ Note that the number of times an item is used is the number of calls to the get 
 Follow up:
 Could you do both operations in O(1) time complexity?
 
- 
 
 Example:
 
@@ -101,7 +100,8 @@ class Solution {
       
       incrementKey(key);
     }
-    
+
+
     void incrementKey(int key) {
       Node node = kNodeMap.get(key);
       
