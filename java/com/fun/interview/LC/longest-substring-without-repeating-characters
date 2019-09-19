@@ -1,0 +1,58 @@
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList;
+
+/**
+*
+* https://leetcode.com/problems/longest-substring-without-repeating-characters/
+*
+*
+For “ABDEFGABEF”, the longest substring are “BDEFGA” and “DEFGAB”, with length 6.
+* GEEKSFORGEEKS : EKSFORG
+*/
+class Solution {
+
+  public static void main(String[] args) {
+
+    String input = "GEEKSFORGEEKS";
+    int maxStart = -1;
+    int maxEnd = -1;
+    Set<Character> seen = new HashSet<>();
+
+    int start = 0;
+    int end = 0;
+
+    while (start < input.length()
+           && end < input.length()) {
+
+      // check and set if we have new max
+      if (end - start > (maxEnd - maxStart)) {
+        System.out.println("New max: " + input.substring(start, end));
+        maxStart = start;
+        maxEnd = end;
+      }
+
+      Character curEnd = input.charAt(end);
+
+      if (seen.contains(curEnd)) {
+        System.out.println(curEnd + " is repeated. moving start forward. "
+                          + " cur window: " + input.substring(start, end));
+
+        // move start forward
+        while (input.charAt(start) != curEnd) {
+          seen.remove(input.charAt(start));
+          start++;
+        }
+        seen.remove(input.charAt(start));
+        start++;
+
+        System.out.println("After moving start. start = "
+                           + start + " end = " + end + " seen" + seen);
+      }
+
+      end++;
+      seen.add(curEnd);
+    }
+  }
+}
