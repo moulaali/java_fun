@@ -1,0 +1,110 @@
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList; 
+
+/**
+* design-hit-counter
+
+* https://leetcode.com/problems/design-hit-counter/
+Design a hit counter which counts the number of hits received in the past 5 minutes.
+
+Each function accepts a timestamp parameter (in seconds granularity) and you may assume that calls are being made to the system in chronological order (ie, the timestamp is monotonically increasing). You may assume that the earliest timestamp starts at 1.
+
+It is possible that several hits arrive roughly at the same time.
+
+Example:
+
+HitCounter counter = new HitCounter();
+
+// hit at timestamp 1.
+counter.hit(1);
+
+// hit at timestamp 2.
+counter.hit(2);
+
+// hit at timestamp 3.
+counter.hit(3);
+
+// get hits at timestamp 4, should return 3.
+counter.getHits(4);
+
+// hit at timestamp 300.
+counter.hit(300);
+
+// get hits at timestamp 300, should return 4.
+counter.getHits(300);
+
+// get hits at timestamp 301, should return 3.
+counter.getHits(301); 
+
+
+Follow up:
+What if the number of hits per second could be very large? Does your design scale?
+
+Approach 1: keep a list of timestamps. when get comes compare 
+and count. this is dangerous since if lot of hits come, we may
+run out of memory.
+
+Approach 2: 
+Better (smarter) approach is to maintain two arrays of size 300.
+In one array store the timestamps % 300 and other for hit count.
+When we get requests beyond the window, say 350, we will override
+50 which is more than 300sec. any requests that come after that
+will not override that till we hit 650 (which 300 sec after 350).
+So it is safe.
+
+*/
+class Solution {
+  
+  public static void main(String[] args) {
+    HitCounter counter = new HitCounter();
+    
+    counter.hit(1);
+    counter.hit(2);
+    counter.hit(3);
+    counter.getHits(4);  // 3
+    counter.hit(300);  // 4
+    counter.getHits(300);
+    counter.getHits(301);
+    
+  } 
+  
+  static class HitCounter {
+    private static final int TIME_WINDOW = 300;
+    
+    private int[] timestamps = new int[TIME_WINDOW];
+    private int[] hits = new int[TIME_WINDOW];
+    
+    
+    HitCounter() {}      
+  
+    void hit(int timestamp) {
+      int bucket = (timestamp % 300);
+      
+      if (timestamps[bucket] != timestamp) {
+        // new ts. replace the bucket
+        timestamps[bucket] = timestamp;
+        hits[bucket] = 1;
+      } else {
+        hits[bucket]++;
+      }
+    }
+    
+    int getHits(int timestamp) {
+      int count = 0;
+      
+      for (int i = 0; i < TIME_WINDOW; i++) {
+        if (timestamp - timestamps[i] < 300) {
+          count += hits[i];
+        }
+      }
+      
+      System.out.println("Hits in past " + TIME_WINDOW + " " 
+                         + " at ts " + timestamp + " is " + count);
+      
+      return count;
+    }
+  }
+}
+
