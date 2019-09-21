@@ -1,0 +1,142 @@
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList; 
+
+/**
+https://leetcode.com/problems/alien-dictionary/
+
+There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. You receive a list of non-empty words from the dictionary, where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language.
+
+Example 1:
+
+Input:
+[
+  "wrt",
+  "wrf",
+  "er",
+  "ett",
+  "rftt"
+]
+
+Output: "wertf"
+Example 2:
+
+Input:
+[
+  "z",
+  "x"
+]
+
+Output: "zx"
+Example 3:
+
+Input:
+[
+  "z",
+  "x",
+  "z"
+] 
+
+Output: "" 
+
+{
+  "baa",
+  "abcd",
+  "abca",
+  "cab",
+  "cad"
+}; //bdac
+
+Explanation: The order is invalid, so return "".
+
+Note:
+
+You may assume all letters are in lowercase.
+You may assume that if a is a prefix of b, then a must appear before b in the given dictionary.
+If the order is invalid, return an empty string.
+There may be multiple valid order of letters, return any one of them is fine.
+
+Approach:
+
+Take each pair of words and find the first set of chars are different. if so, save it as a dep in map (ex: x is before y)
+Do NOT make more assumptions beyond that. since the sorting does not guarantee. 
+
+Once the graph is built, simply topological sort for ordering. topo sort is same as dfs with vertix printer after dfs'ing
+the neighbors. in dfs, we normally print the node and do dfs on neighbors. in top, we do the reverse.
+*/
+class Solution {
+  
+  public static void main(String[] args) throws Exception {
+    
+    String[] words = new String[]  {
+      "baa",
+      "abcd",
+      "abca",
+      "cab",
+      "cad"
+    }; // bdac
+    
+    System.out.println("List of words " + Arrays.toString(words));
+    
+    Map<Character, Set<Character>> charOrderGraph = new HashMap<>();
+    // Go through each pair of words and add edges as need
+    for (int i = 0; i < words.length - 1; i++) {
+      for (int j = 0; j < Math.min(words[i].length(), words[i + 1].length()); j++) {
+    
+        Character c1 = words[i].charAt(j);
+        Character c2 = words[i + 1].charAt(j);
+        
+        if (c1 != c2) {
+          
+          // check if c2->c1 exists, if so, it is a conflicting list
+          if (charOrderGraph.getOrDefault(c2, new HashSet<>()).contains(c1)) {
+            throw new Exception("Conflicting words (" + words[i] + ", " + words[i + 1] + ") : already exists :" +  c2 + "->" + c1);
+          }
+          
+          charOrderGraph.putIfAbsent(c1, new HashSet<>());
+          charOrderGraph.get(c1).add(c2);
+          
+          System.out.println("\n\nAdded new edge from word pair (" + words[i] + ", " + words[i + 1] + ") : " +  c1 + "->" + c2);
+          break;
+        }
+      }
+      
+      System.out.println("Graph after adding words " + words[i] + " " + words[i + 1] + " " + charOrderGraph);
+    }
+    
+    // Do topological sorting. i.e dfs with reverse order of printing
+    topologicalSort(charOrderGraph);
+  }
+  
+  static void topologicalSort(Map<Character, Set<Character>> charOrderGraph) {
+    Set<Character> visited = new HashSet<>();
+    Stack<Character> orderStack = new Stack<>();
+    
+    for (Character c : charOrderGraph.keySet()) {
+      dfs(c, charOrderGraph, visited,  orderStack);
+    }
+    
+    System.out.print("Order is : ");
+    while (!orderStack.isEmpty()) {
+      System.out.print(orderStack.pop() + (orderStack.isEmpty() ? "" : "->"));
+    } 
+  }
+  
+  static void dfs(
+    Character v, Map<Character, Set<Character>> graph, Set<Character> visited, 
+    Stack<Character> orderStack) {
+    
+    if (visited.contains(v)) {
+      return;
+    }
+    
+    // Mark as visited, visit all neighbors and push the vertex to stack
+    visited.add(v);
+    for (Character neighbor : graph.getOrDefault(v, new HashSet<>())) {
+      dfs(neighbor, graph, visited, orderStack);
+    }
+    
+    orderStack.push(v);
+  } 
+}
