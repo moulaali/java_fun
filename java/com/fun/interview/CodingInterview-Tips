@@ -3,7 +3,10 @@
 * Coding
   ** Ask clarifying questions before jumping to answer 
   ** Keep simple names. (length, input, start, end, max, etc)
+  ** break into small functions and test each one before writing the whole program
   ** Log important flow conditions with var values
   ** start with simple case and make it work. iterate for complexity
   ** Manually verify the logic to make sure there are no bugs
+  ** Do not add too many comments. wastes your time
+  
  
