@@ -1,0 +1,66 @@
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList; 
+
+/**
+
+https://leetcode.com/problems/letter-combinations-of-a-phone-number/
+
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+
+
+Example:
+
+Input: "234"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+*
+* Approach: use a stack to push a mapping char and recursively call with substring. 
+* After that pop the mapping char back and push the next mapping char.
+*
+* we can manage a stack as a simple array with a pointer to top index
+*/
+class Solution {
+  
+  static Map<Character, List<Character>> map = new HashMap<>();
+  static int top = 0;
+  static List<String> outputs = new ArrayList<>();
+
+  public static void main(String[] args) {
+    
+    // Initialize the mapping
+    map.put('2', List.of('a', 'b', 'c'));
+    map.put('3', List.of('d', 'e', 'f'));
+    map.put('4', List.of('g', 'h', 'i'));
+    map.put('5', List.of('j', 'k', 'l'));
+    map.put('6', List.of('m', 'n', 'o'));
+    map.put('7', List.of('p', 'q', 'r', 's'));
+    map.put('8', List.of('t', 'u', 'v'));
+    map.put('9', List.of('w', 'x', 'y', 'z'));
+    
+    String input = "23"; // [ad, ae , af , bd , be , bf , cd , ce , cf ]
+    
+    char[] stack = new char[input.length() + 1];
+    printLetterCombs(input, stack);
+    
+    System.out.println("Possible combos: " + outputs); 
+  }
+  
+  static void printLetterCombs(String input, char[] stack) {
+    System.out.println("print called with " + input + " " + " stack " + Arrays.toString(stack));
+    
+    if (input.isEmpty()) {
+      outputs.add(new String(stack));
+      return;
+    }
+     
+    for (Character c : map.get(input.charAt(0))) {
+      stack[top++] = c;
+      printLetterCombs(input.substring(1, input.length()), stack);
+      stack[top--] = ' ';
+    }
+  }
+}
