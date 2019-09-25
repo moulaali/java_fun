@@ -1,0 +1,199 @@
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList; 
+
+/**
+
+https://leetcode.com/problems/lru-cache/
+
+Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: get and put.
+
+get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
+put(key, value) - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.
+
+The cache is initialized with a positive capacity.
+
+Follow up:
+Could you do both operations in O(1) time complexity?
+
+Example:
+
+LRUCache cache = new LRUCache( 2 );
+
+cache.put(1, 1);
+cache.put(2, 2);
+cache.get(1);       // returns 1
+cache.put(3, 3);    // evicts key 2
+cache.get(2);       // returns -1 (not found)
+cache.put(4, 4);    // evicts key 1
+cache.get(1);       // returns -1 (not found)
+cache.get(3);       // returns 3
+cache.get(4);       // returns 4
+
+*/
+class Solution {
+  
+  public static void main(String[] args) {
+    LRUCache cache = new LRUCache(2);
+    
+    cache.put(1, 1);
+    cache.put(2, 2);
+    cache.get(1);       // returns 1
+    cache.put(3, 3);    // evicts key 2
+    cache.get(2);       // returns -1 (not found)
+    cache.put(4, 4);    // evicts key 1
+    cache.get(1);       // returns -1 (not found)
+    cache.get(3);       // returns 3
+    cache.get(4);       // returns 4
+    
+  }
+  
+  static class LRUCache {
+    private Map<Integer, Node> cache;
+    private Dllist dllist;
+    private int capacity;
+    
+    LRUCache(int capacity) {
+      cache = new HashMap<>();
+      dllist = new Dllist();
+      this.capacity = capacity;
+    }
+    
+    void put(int key, int newValue) {
+      
+      System.out.println("---");
+      
+      if (cache.containsKey(key)) {
+        Node n = cache.get(key);
+        n.value = newValue;
+        dllist.moveToHead(n);
+        
+        System.out.println("List after put (existing) " + key);
+        dllist.print();
+        
+        return;
+      }
+      
+      if (cache.size() == capacity) {
+        System.out.println("Evicting lru. key=" + dllist.tail.key);
+        cache.remove(dllist.tail.key);
+        dllist.deleteTail();
+        System.out.print("List after evicting");
+        dllist.print();
+        System.out.println("Cache after evicting" + cache);
+      }
+
+      Node n = new Node(key, newValue);
+      dllist.prepend(n);  
+      cache.put(key, n);
+      
+      System.out.println("List after put (new) " + key);
+      dllist.print();
+    }
+    
+    int get(int key) {
+      
+      System.out.println("---");
+      
+      Node n = cache.get(key);
+      
+      if (n == null) {
+        return -1;
+      }
+      
+      dllist.moveToHead(n);
+      System.out.println("List after get " + key);
+      dllist.print();
+      
+      System.out.println("Get returning " + n.value);
+      return n.value;
+    }
+  }
+  
+  static class Dllist {
+    Node head;
+    Node tail;
+    
+    Dllist() {
+      this.head = null;
+      this.tail = null;
+    }
+    
+    void prepend(Node node) {
+      
+      if (this.head == null) {
+        this.head = node;
+        this.tail = node;
+        node.next = null;
+        node.prev = null;
+        
+        return;
+      }
+      
+      node.prev = null;
+      node.next = head;
+      head.prev = node;
+      head = node;
+    }
+    
+    void deleteTail() {
+      if (tail == null) {
+        return;
+      }  
+      
+      if (tail.prev != null) {
+        tail.prev.next = null;
+        tail = tail.prev;
+      }
+    }
+    
+    void moveToHead(Node n) {
+      
+      System.out.println("Moving " + n.key + " to head");
+      
+      // take node out of chain and fix the neighbors
+      if (n.prev != null) {
+        // System.out.println("Prev is not null " + n.prev.key);
+        n.prev.next = n.next;
+      }
+      
+      if (n.next == null) {
+        // System.out.println("next is null (tail) ");
+        // tail
+        tail = n.prev;
+      } else {
+        // System.out.println("next is not null" + n.next.key);
+        n.next.prev = n.prev;
+      }
+      
+      prepend(n);
+    }
+    
+    void print() {
+      Node n = head;
+      
+      while (n != null) {
+        System.out.print(String.format("(%d-%d)->", n.key, n.value));
+        n = n.next;
+      }
+      
+      System.out.println("");
+    }
+  }
+  
+  static class Node {
+    
+    int key;
+    int value;
+    Node next;
+    Node prev;
+    
+    Node(int key, int value) {
+      this.key = key;
+      this.value = value;
+      this.next = null;
+      this.prev = null;
+    }
+  }
+}
