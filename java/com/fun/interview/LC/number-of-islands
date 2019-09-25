@@ -1,107 +1,107 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList; 
 
 /**
- * Prints number of islands of 1s in a matrix.
- *
-  * <p> Solution involves creating a forest of BFS trees. Each tree is a connected component
-  * and counted as 1 island. We start at every vertex and navigate the matrix in BFS manner.
-  * Every valid neighbor whose value is 1 and unvisited is explored.
-  */
-public class IslandCount {
 
-    private static class Element {
+https://leetcode.com/problems/number-of-islands/
 
-        int i;
-        int j;
+Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
 
-        private static final int[][] NEIGHBOR_OFFSETS = {
-            {-1, -1},
-            {-1, 0},
-            {-1, 1},
-            {0, 1},
-            {1, 1},
-            {1, 0},
-            {1, -1},
-            {0, -1}
-        };
+Example 1:
 
-        Element(int i, int j) {
-            this.i = i;
-            this.j = j;
+Input:
+11110
+11010
+11000
+00000
+
+Output: 1
+Example 2:
+
+Input:
+11000
+11000
+00100
+00011
+
+Output: 3
+
+*/
+class Solution {
+  
+  public static void main(String[] args) {
+    int[][] grid = {
+      {1, 1, 0, 0, 0},
+      {1, 1, 0, 0, 0},
+      {0, 0, 1, 0, 0},
+      {0, 0, 0, 1, 1},
+    };
+    
+    // mark all as unvisited
+    boolean[][] visited = new boolean[grid.length][grid[0].length];
+    for (int i = 0; i < visited.length; i++) {
+      for (int j = 0; j < visited[i].length; j++) {
+        visited[i][j] = false;
+      }
+    }
+    
+    System.out.println("Count " + getIslandCount(grid, visited));
+  }
+  
+  static int getIslandCount(int[][] grid, boolean[][] visited) {
+    
+    int islands = 0;
+    
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[i].length; j++) {
+    
+        // skip water or visited lands
+        if (grid[i][j] == 0 || visited[i][j]) {
+          continue;
         }
-
-        List<Element> getValidNeighbors(int size, int[][] matrix, boolean[][] visited) {
-            List<Element> neighbors = new ArrayList<>();
-
-            for (int c = 0; c < NEIGHBOR_OFFSETS.length; c++) {
-                int neighbor_i = i + NEIGHBOR_OFFSETS[c][0];
-                int neighbor_j = j + NEIGHBOR_OFFSETS[c][1];
-
-                if (neighbor_i < 0
-                    || neighbor_i >= size
-                    || neighbor_j < 0
-                    || neighbor_j >= size
-                    || (matrix[neighbor_i][neighbor_j] == 0)
-                    || (visited[neighbor_i][neighbor_j] == true)) {
-                        continue;
-                }
-
-                neighbors.add(new Element(neighbor_i, neighbor_j));
-            }
-
-            return neighbors;
-        }
-
+        
+        System.out.println(String.format("%d,%d is start of new island. ", i, j));
+        islands++;
+        dfs(grid, visited, i, j);
+      }
     }
-
-    public static void main(String args[] ) throws Exception {
-       // Returns 4
-       int[][] matrix = {
-           {1, 0, 0, 1, 0},
-           {1, 1, 0, 1, 0},
-           {0, 0, 0, 0, 1},
-           {0, 1, 1, 0, 0},
-           {0, 1, 0, 0, 1}
-       };
-
-       System.out.println("Number of islands: " + getIslandCount(matrix, 5));
+    
+    return islands;
+  }
+  
+  // Dfs walk and mark unvisited neighbors
+  static void dfs(int[][] grid, boolean[][] visited, int i, int j) {
+    
+    visited[i][j] = true;
+    
+    // find neighbors and dfs visit them
+    
+    // right
+    if (j + 1 < grid[i].length && grid[i][j + 1] == 1 && !visited[i][j + 1]) {
+      System.out.println(String.format("Adding (%d,%d) to walk. ", i, j + 1));
+      dfs(grid, visited, i, j + 1);
     }
-
-    /**
-     * Counts number of islands of 1s
-     */
-    static int getIslandCount(int [][] matrix, int size) {
-
-       boolean visited[][] = new boolean[size][size];
-       int islandCount = 0;
-       Queue<Element> queue = new LinkedList<>();
-
-       for (int i = 0; i < size; i++) {
-           for (int j = 0; j < size; j++) {
-               // Ignore non 1s
-               if (matrix[i][j] == 0) {
-                   continue;
-               }
-
-               // If this is not seen before, start a new island and mark all reachable nodes as visited
-               if (!visited[i][j]) {
-                   islandCount++;
-                   queue.add(new Element(i, j));
-                   while (!queue.isEmpty()) {
-                       Element e = queue.remove();
-                       visited[e.i][e.j] = true;
-                       List<Element> neighbors = e.getValidNeighbors(size, matrix, visited);
-                       queue.addAll(neighbors);
-                   }
-               }
-
-           }
-       }
-
-       return islandCount;
+    
+    // left
+    if (j - 1 >= 0 && grid[i][j - 1] == 1 && !visited[i][j - 1]) {
+      System.out.println(String.format("Adding (%d,%d) to walk. ", i, j - 1));
+      dfs(grid, visited, i, j - 1);
     }
+    
+    // top
+    if (i - 1 >= 0 && grid[i - 1][j] == 1 && !visited[i - 1][j]) {
+      System.out.println(String.format("Adding (%d,%d) to walk. ", i - 1, j));
+      dfs(grid, visited, i - 1, j);
+    }
+    
+    // bottom
+    if (i + 1 < grid.length && grid[i + 1][j] == 1 && !visited[i + 1][j]) {
+      System.out.println(String.format("Adding (%d,%d) to walk. ", i + 1, j));
+      dfs(grid, visited, i + 1, j);
+    }
+    
+    return;
+  }
 }
