@@ -1,0 +1,82 @@
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList; 
+
+/**
+
+https://leetcode.com/problems/decode-ways/
+
+A message containing letters from A-Z is being encoded to numbers using the following mapping:
+
+'A' -> 1
+'B' -> 2
+...
+'Z' -> 26
+Given a non-empty string containing only digits, determine the total number of ways to decode it.
+
+Example 1:
+
+Input: "12"
+Output: 2
+Explanation: It could be decoded as "AB" (1 2) or "L" (12).
+Example 2:
+
+Input: "226"
+Output: 3
+Explanation: It could be decoded as "BZ" (2 26), "VF" (22 6), or "BBF" (2 2 6).
+
+*/
+class Solution {
+  
+  public static void main(String[] args) {
+    String input = "12";
+    List<String> possibilities = decode(input);
+    System.out.println("Possible decodes " + possibilities);
+  }
+  
+  static List<String> decode(String encoded) {
+    
+    System.out.println("Trying to decode " + encoded);
+    
+    List<String> possibilities = new ArrayList<>();
+    
+    if (encoded.isEmpty()) {
+      return possibilities;
+    }
+    
+    char c = (char) (Character.getNumericValue(encoded.charAt(0)) + 64);
+   
+    if (encoded.length() == 1) {
+      System.out.println("Adding single value " + c);
+      possibilities.add(String.valueOf(c));
+      return possibilities;
+    }
+    
+    if (encoded.length() > 1) {
+      List<String> decodes = decode(encoded.substring(1));
+      for (String decoded : decodes) {
+        System.out.println("Added " + (c + decoded));
+        possibilities.add(c + decoded);
+      }
+      
+      int code = Integer.valueOf(encoded.substring(0, 2));
+      
+      if (code >= 10 && code <= 26) {
+        c = (char) (code + 64);
+      }
+      
+      List<String> decodes2 = decode(encoded.substring(2));
+      
+      if (decodes2.isEmpty()) {
+        possibilities.add(String.valueOf(c));
+      }
+      for (String decoded : decodes2) {
+        System.out.println("Added " + (c + decoded));
+        possibilities.add(c + decoded);
+      }
+    } 
+    
+    return possibilities;
+  }
+}
