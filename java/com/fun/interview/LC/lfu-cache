@@ -1,11 +1,11 @@
-import java.io.*;
-import java.util.*;
-import java.util.Map.Entry;
-import com.google.common.collect.ImmutableList; 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
-*
-* https://leetcode.com/problems/lfu-cache/
+
+https://leetcode.com/problems/lfu-cache/
 
 Design and implement a data structure for Least Frequently Used (LFU) cache. It should support the following operations: get and put.
 
@@ -14,180 +14,215 @@ put(key, value) - Set or insert the value if the key is not already present. Whe
 
 Note that the number of times an item is used is the number of calls to the get and put functions for that item since it was inserted. This number is set to zero when the item is removed.
 
- 
-
-Follow up:
-Could you do both operations in O(1) time complexity?
-
-
-Example:
-
-LFUCache cache = new LFUCache(2);
-
-cache.put(1, 1);
-cache.put(2, 2);
-cache.get(1);       // returns 1
-cache.put(3, 3);    // evicts key 2
-cache.get(2);       // returns -1 (not found)
-cache.get(3);       // returns 3.
-cache.put(4, 4);    // evicts key 1.
-cache.get(1);       // returns -1 (not found)
-cache.get(3);       // returns 3
-cache.get(4);       // returns 4
-
-Approach : 
-* Option 1: Maintain a simple map with a value object (value, freq). for lfu, do a O(n) lookup for LF
-* Option 2: In addition to key value map. have another map that stores key->node_in_list. The list is a ascending ordered
-*           on frequency and list of keys with same frequency. the tail has LFU keys. when key value is incremented :
-            1/ If new key, add a new node with freq 1 
-            2/ if a node exists, remove the key and add it to next node (if next node freq is freq + 1) or create a new node
-*
-*  based on : https://leetcode.com/problems/lfu-cache/discuss/94515/Java-O(1)-Accept-Solution-Using-HashMap-DoubleLinkedList-and-LinkedHashSet          
-*
-*/
+ */
 class Solution {
-  public static void main(String[] args)  {
-    LfuCache cache = new LfuCache(10);
-    
-    cache.put(1, 1);
-    cache.put(2, 2);
-    cache.get(1);       // returns 1
-    cache.put(3, 3);    
-    cache.get(2);      
-  }
-  
-  static class LfuCache {
-    
-    int capacity;
-    private Map<Integer, Integer> kvMap;
-    private Map<Integer, Node> kNodeMap;
-    
-    LfuCache(int capacity) {
-      this.kvMap = new HashMap<>();
-      this.capacity = capacity;
-    }
-    
-    int get(int key) {
-      Integer value = kvMap.get(key);
-      
-      if (value == null) {
-        return -1;
-      }
-      
-      incrementKey(key);
-      
-      System.out.println("get() response: " + value);
-      return (value);
-    }
-    
-    void put(int key, int newValue) {
-      Integer currentValue = kvMap.get(key);
-      
-      // Update
-      if (currentValue != null) {
-        kvMap.put(key, newValue);
-      }
-      
-      // is cache out of space
-      if (kvMap.size() == capacity) {
-        evictLfu();
-      }
-      
-      if (currentValue == null) {
-        kvMap.put(key, newValue);
-        kNodeMap.put(key, new Node(key, 1));
-      }
-      
-      incrementKey(key);
+
+    public static void main(String[] args) {
+      LFUCache cache = new LFUCache(3);
+
+      cache.put(1, 1);
+      cache.put(2, 2);
+      System.out.println(cache.get(1));
+      System.out.println(cache.get(1));
+      cache.put(3, 3);
+      cache.put(4, 4);
+      System.out.println(cache.get(1));
     }
 
+    static class LFUCache {
+        private Map<Integer, Integer> cache;
+        private Map<Integer, Node> freqLookup;
+        private Dllist dllList;
+        private int capacity;
 
-    void incrementKey(int key) {
-      Node node = kNodeMap.get(key);
-      
-      // if there is a next node 
-      if (node.next != null) {
-        // with freq + 1, move the key there
-        if (node.next.frequency == node.frequency + 1) {
-          node.next.keys.add(key);  
-        } else {
-          // insert after the current node
-          Node newNode = new Node(key, frequency + 1);
-          newNode.prev = node;
-          newNode.next = node.next;
-          node.next = newNode;
-          node.next.prev = newNode;
+        LFUCache(int capacity) {
+            cache = new HashMap<>();
+            dllList = new Dllist();
+            freqLookup = new HashMap<>();
+            this.capacity = capacity;
         }
-      } else {
-        // there is no next node. i.e. it is tail 
-        Node newNode = new Node(key, frequency + 1);
-        newNode.prev = node;
-        newNode.next = node.next;
-        node.next = newNode;
-        
-        tail = newNode;
-      }  
-        
-      
-      // cleanup current node
-      node.keys.remove(key);
-      if (node.keys.isEmpty()) {
-        removeNode(node);
-      }
-      
-      
-      System.out.println("Frequency List status after incrementing key " + key + ":" + )
-      
-      return;
+
+        void put(int key, int newValue) {
+            System.out.println("\n\n---");
+            System.out.println("put() called for key "+ key);
+
+            if (cache.containsKey(key)) {
+                cache.put(key, newValue);
+                Node freqData = freqLookup.get(key);
+                freqLookup.put(key, dllList.incrementFreq(freqData, key));
+
+                printState("Updated existing key " + key);
+                return;
+            }
+
+            if (cache.size() == capacity) {
+                int lfuKey = dllList.removeLfu();
+                cache.remove(lfuKey);
+                freqLookup.remove(lfuKey);
+                printState("Capacity reached. Evicted lfu " + lfuKey);
+            }
+
+            cache.put(key, newValue);
+            Node n = dllList.addNewKey(key);
+            freqLookup.put(key, n);
+          
+            printState("completed put() " + key);
+        }
+
+        int get(int key) {
+            System.out.println("\n\n---");
+            System.out.println("get() called for key "+ key);
+
+            Integer val = cache.get(key);
+            if (val == null) {
+                return -1;
+            }
+
+            // get the node and increment the freq in the list
+            Node freqData = freqLookup.get(key);
+            freqLookup.put(key, dllList.incrementFreq(freqData, key));
+
+            printState("completed get() " + key);
+            return val;
+        }
+
+        void printState(String msg) {
+            System.out.println(msg);
+            System.out.println("Internal state");
+            System.out.println("---");
+            dllList.print();
+            System.out.println("Value cache : " + cache);
+            System.out.println("Freq node lookup map : " + freqLookup);
+        }
     }
-    
-    void evictLfu() {
-      // TODO
-      return;
+
+    static class Dllist {
+        Node head;
+        Node tail;
+
+        Dllist() {
+            this.head = null;
+            this.tail = null;
+        }
+
+        Node incrementFreq(Node n, int key) {
+          
+            Node newFreqNode = null;
+          
+            // if next node has freq + 1, move it there
+            if ((n.next != null) && n.next.freq == n.freq + 1) {
+                System.out.println(String.format("Next node has freq + 1, move right. key=%d",  key));
+                n.next.keys.add(key);
+                newFreqNode = n.next;
+            } else {
+                System.out.println(String.format("Next node is either empty or not freq + 1. Adding new node to right. key=%d",  key));
+                Node newNode = new Node(key, n.freq + 1);
+                addNewNode(n, newNode);
+                newFreqNode = newNode;
+            }
+
+            // remove the key from current freq
+            n.removeKey(key);
+            checkAndDelete(n);
+
+            return newFreqNode;
+        }
+
+        Node addNewKey(int key) {
+            if (head != null) {
+                if (head.freq == 1) {
+                    head.addKey(key);
+                    return head;
+                } else {
+                    Node newNode = new Node(key, 1);
+                    addNewNode(head, newNode);
+                    return newNode;
+                }
+            } else {
+                Node newNode = new Node(key, 1);
+                this.head = newNode;
+                this.tail = newNode;
+                return newNode;
+            }
+        }
+
+        void addNewNode(Node prev, Node newNode) {
+            newNode.next = prev.next;
+            newNode.prev = prev;
+            prev.next = newNode;
+        }
+
+        void checkAndDelete(Node n) {
+            if (n.keys.isEmpty()) {
+                System.out.println("Last key removed. deleting node with freq " + n.freq);
+                delete(n);
+            }
+        }
+
+        int removeLfu() {
+            int key = tail.keys.get(0);
+            tail.removeKey(key);
+            checkAndDelete(tail);
+
+            return key;
+        }
+
+        void delete(Node n) {
+
+            if (n == head) {
+                head = n.next;
+            }
+
+            if (n == tail) {
+                tail = n.prev;
+            }
+
+            if (n.prev != null) {
+                n.prev.next = n.next;
+            }
+
+            if (n.next != null) {
+                n.next.prev = n.prev;
+            }
+        }
+
+        void print() {
+            Node n = head;
+            while (n != null) {
+                System.out.print(String.format("(freq=%d, keys=%s)->", n.freq, n.keys));
+                n = n.next;
+            }
+            System.out.println("");
+        }
     }
-  }
-  
-  static class Node {
-    int frequency;
-    List<Integer> keys;
-    Node next;
-    Node prev;
-    
-    Node(int key, int frequency) {
-      this.frequency = frequency;
-      this.keys = new ArrayList<>();
-      keys.add(key);
-    }
-  }
-  
-  static class DLList {
-    Node head;
-    Node tail;
-    
-    void removeNode(Node n) {
-      if (head == n) {
-        head = n.next;
-        n.next.prev = null;
-      } else if (tail == n) {
-        tail = n.prev;
-        n.prev.next = null;
-      } 
-      else {
-        n.prev.next = n.next;
-        n.next.prev = n.prev;
-      }
-    }
-    
-    void print() {
-      Node n = head;
+
+    static class Node {
+
+        int freq;
+        List<Integer> keys;
+        Node next;
+        Node prev;
+
+        Node(int key, int freq) {
+            keys = new ArrayList<>();
+
+            this.freq = freq;
+            this.keys.add(key);
+            this.next = null;
+            this.prev = null;
+        }
+
+        void addKey(int key) {
+            keys.add(key);
+        }
       
-      while (n != null) {
-        System.out.print(n + ":" + "->");
-        n = n.next;
-      }
-      
-      System.out.println("");
+        void removeKey(int key) {
+          keys.remove((Integer) key);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("(freq=%d, keys=%s)", freq, keys);
+        }
     }
-  }
-  
 }
