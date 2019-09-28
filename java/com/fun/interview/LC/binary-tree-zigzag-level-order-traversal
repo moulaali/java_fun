@@ -1,0 +1,96 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+/**
+
+ https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
+ 
+Print ZigZag mode
+
+Approach : Keep 2 stacks. put root node in first stack. then keep popping from first stack and printing the data.
+also add the left child and right child to other stack. Keep switching the currentStack to first and other stack.
+also keep switching the order of push (left,right to right, left)
+ */
+class Solution {
+
+    public static void main(String[] args) {
+      
+      Node node5 = new Node(5);
+      Node node6 = new Node(6);
+      Node node7 = new Node(7);
+      Node node8 = new Node(8);
+      Node node9 = new Node(9);
+      Node node4 = new Node(4, node8, node9);
+      
+      Node node2 = new Node(2, node4, node5);
+      Node node3 = new Node(3, node6, node7);
+      
+      Node root = new Node(1, node2, node3);
+      
+      /**
+      1
+      3,2
+      4,5,6,7
+      9,8 */
+      root.printZigZag(); 
+    }
+
+    static class Node {
+      int data;
+      Node left;
+      Node right;
+      
+      Node(int data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+      }
+      
+      Node(int data, Node left, Node right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+      }
+      
+      void printZigZag() {
+        Stack<Node> stack1 = new Stack<>();
+        Stack<Node> stack2 = new Stack<>();
+        
+        boolean firstStack = true;
+        stack1.push(this);
+        
+        while (!stack1.isEmpty() || !stack2.isEmpty()) {
+          Stack<Node> curStack = (firstStack ? stack1 : stack2);
+          Stack<Node> otherStack = (firstStack ? stack2 : stack1);
+          
+          while (!curStack.isEmpty()) {            
+            Node n = curStack.pop();
+            System.out.print(n.data);
+            
+            if (firstStack) {
+              checkAndPush(n.left, otherStack);
+              checkAndPush(n.right, otherStack);
+            } else {
+              checkAndPush(n.right, otherStack);
+              checkAndPush(n.left, otherStack);
+            }
+            
+            System.out.print(curStack.isEmpty() ? "" : ",");
+          }
+          System.out.println("");
+          
+          firstStack = !firstStack;
+          
+        }
+      }
+      
+      void checkAndPush(Node n, Stack<Node> stack) {
+        if (n != null) {
+          stack.push(n);
+        }
+      }
+    }
+}
