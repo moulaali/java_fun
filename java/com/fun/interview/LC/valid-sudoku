@@ -1,0 +1,123 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/valid-sudoku/
+
+Determine if a 9x9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+
+Each row must contain the digits 1-9 without repetition.
+Each column must contain the digits 1-9 without repetition.
+Each of the 9 3x3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+
+Examples:
+[
+  ["5","3",".",".","7",".",".",".","."],
+  ["6",".",".","1","9","5",".",".","."],
+  [".","9","8",".",".",".",".","6","."],
+  ["8",".",".",".","6",".",".",".","3"],
+  ["4",".",".","8",".","3",".",".","1"],
+  ["7",".",".",".","2",".",".",".","6"],
+  [".","6",".",".",".",".","2","8","."],
+  [".",".",".","4","1","9",".",".","5"],
+  [".",".",".",".","8",".",".","7","9"]
+]
+Output: true
+
+[
+  ["8","3",".",".","7",".",".",".","."],
+  ["6",".",".","1","9","5",".",".","."],
+  [".","9","8",".",".",".",".","6","."],
+  ["8",".",".",".","6",".",".",".","3"],
+  ["4",".",".","8",".","3",".",".","1"],
+  ["7",".",".",".","2",".",".",".","6"],
+  [".","6",".",".",".",".","2","8","."],
+  [".",".",".","4","1","9",".",".","5"],
+  [".",".",".",".","8",".",".","7","9"]
+]
+
+Output: false
+Explanation: Same as Example 1, except with the 5 in the top left corner being 
+    modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
+
+Approach: Simple checking 
+
+1/ for row check : reuse single hashset of seen digits
+2/ for col check : use a list of 9 hashsets
+3/ for box check : use a list of 9 hashset. A box-index for (i, j) can be retreived as :
+((i / 3) * 3)  + (j / 3);
+ */
+class Solution {
+
+    public static void main(String[] args) {
+      String[][] s = new String[][] {
+        {"8","3",".",".","7",".",".",".","."},
+        {"6",".",".","1","9","5",".",".","."},
+        {".","9",".",".",".",".",".","6","."},
+        {".",".",".",".","6",".",".",".","3"},
+        {"4",".",".","8",".","3",".",".","1"},
+        {"7",".",".",".","2",".",".",".","6"},
+        {".","6",".",".",".",".","2","8","."},
+        {".",".",".","4","1","9",".",".","5"},
+        {".",".",".",".","4",".",".","7","9"}
+      };
+      
+      System.out.println("Valid : " + isValid(s));
+    }
+  
+  static boolean isValid(String[][] s) {
+      // Init boxes map
+      ArrayList<HashSet<Integer>> boxesSeen = new ArrayList<HashSet<Integer>>();
+      for (int i = 0; i < 9; i++) {
+        boxesSeen.add(new HashSet<Integer>());
+      }
+    
+      // Init cols map
+      ArrayList<HashSet<Integer>> colsSeen = new ArrayList<HashSet<Integer>>();
+      for (int i = 0; i < 9; i++) {
+        colsSeen.add(new HashSet<Integer>());
+      }
+    
+      for (int i = 0; i < s.length; i++) {
+        Set<Integer> rowSeen = new HashSet<Integer>();
+        for (int j = 0; j < s[i].length; j++) {
+          String val = s[i][j];
+          int digit = (val.equals(".") ? -1 : Integer.valueOf(val));
+          
+          if (digit == -1) {
+            continue;
+          }
+          
+          // row check
+          if (rowSeen.contains(digit)) {
+            System.out.println(String.format("%d is repeated in rowIndex: %d", digit, i));
+            return false;
+          }
+          rowSeen.add(digit);
+          
+          // col check
+          if(colsSeen.get(j).contains(digit)) {
+            System.out.println(String.format("%d is repeated in colIndex: %d", digit, j));
+            return false;
+          }
+          colsSeen.get(j).add(digit);
+          
+          // box check
+          int boxIndex = getBoxIndex(i, j);
+          if(boxesSeen.get(boxIndex).contains(digit)) {
+            System.out.println(String.format("%d is repeated in boxIndex: %d", digit, boxIndex));
+            return false;
+          }
+          boxesSeen.get(boxIndex).add(digit);
+
+        }
+      }
+    
+      return true;
+  }
+  
+  // https://leetcode.com/problems/valid-sudoku/solution/
+  static int getBoxIndex(int i, int j) {
+    return ((i / 3) * 3)  + (j / 3);
+  }
+}
