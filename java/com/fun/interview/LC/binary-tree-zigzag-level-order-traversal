@@ -11,7 +11,6 @@ also add the left child and right child to other stack. Keep switching the curre
 also keep switching the order of push (left,right to right, left)
  */
 class Solution {
-
     public static void main(String[] args) {
       
       Node node5 = new Node(5);
