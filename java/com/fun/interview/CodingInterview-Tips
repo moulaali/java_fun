@@ -1,12 +1,17 @@
 * Move Fast. Do not spend too much time for previous projects and experience. 
+
 * Jump to coding problem as soon as you can
+
 * Coding
   ** Ask clarifying questions before jumping to answer 
   ** Keep simple names. (length, input, start, end, max, etc)
   ** break into small functions and test each one before writing the whole program
-  ** Log important flow conditions with var values
+  ** Log important flow conditions with var values. Use String.format() for ease.
   ** start with simple case and make it work. iterate for complexity
   ** Manually verify the logic to make sure there are no bugs
   ** Do not add too many comments. wastes your time
+  ** import java.util.* instead of multiple import
+  ** keep super simple names and vars
+   
   
  
