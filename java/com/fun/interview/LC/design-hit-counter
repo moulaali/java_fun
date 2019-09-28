@@ -38,7 +38,6 @@ counter.getHits(300);
 // get hits at timestamp 301, should return 3.
 counter.getHits(301); 
 
-
 Follow up:
 What if the number of hits per second could be very large? Does your design scale?
 
@@ -67,7 +66,6 @@ class Solution {
     counter.hit(300);  // 4
     counter.getHits(300);
     counter.getHits(301);
-    
   } 
   
   static class HitCounter {
@@ -75,8 +73,7 @@ class Solution {
     
     private int[] timestamps = new int[TIME_WINDOW];
     private int[] hits = new int[TIME_WINDOW];
-    
-    
+     
     HitCounter() {}      
   
     void hit(int timestamp) {
@@ -102,9 +99,7 @@ class Solution {
       
       System.out.println("Hits in past " + TIME_WINDOW + " " 
                          + " at ts " + timestamp + " is " + count);
-      
       return count;
     }
   }
 }
-
