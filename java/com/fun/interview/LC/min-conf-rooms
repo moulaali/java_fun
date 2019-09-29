@@ -39,8 +39,7 @@ public class MinimumConferenceRooms {
         }
     });
 
-    System.out.println("Post Sorting mtgs " + Arrays.deepToString(mtgs));
-
+    System.out.println("Sorted mtgs on start time: " + Arrays.deepToString(mtgs));
 
     PriorityQueue<Mtg> pq = new PriorityQueue<Mtg>(new Comparator<Mtg>() {
         @Override
