@@ -1,0 +1,110 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/word-ladder/
+
+Given two words (beginWord and endWord), and a dictionary's word list, find the length of shortest transformation sequence from beginWord to endWord, such that:
+
+Only one letter can be changed at a time.
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+Note:
+
+Return 0 if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+Example 1:
+
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output: 5
+
+Explanation: As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+return its length 5.
+Example 2:
+
+Input:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+
+Output: 0
+
+Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
+ */
+class Solution {
+
+  public static void main(String[] args) {
+    Set<String> words = new HashSet<>();
+    words.addAll(Arrays.asList(
+      "POON",
+      "PLEE",
+      "SAME",
+      "POIE",
+      "PLEA",
+      "PLIE",
+      "POIN"));  // TOON - POON - POIN - POIE - PLIE - PLEE - PLEA
+
+    String begin = "TOON";
+    String end = "PLEA";
+
+    if (!words.contains(end)) {
+      System.out.println("one of begin or end is not in input.");
+      return;
+    }
+    
+    Stack<String> pathStack = new Stack<>();
+    Set<String> seen = new HashSet<>();
+    pathStack.push(begin);
+    dfs(words, begin, end, pathStack, seen);
+  }
+  
+  static boolean dfs(Set<String> words, String cur,String end, Stack<String> stack, Set<String> seen) {
+    if (cur.equals(end)) {
+      System.out.println("Found path " + stack);
+      return true;
+    }
+    
+    seen.add(cur);
+    
+    // find valid edges
+    for (String word : words) {
+      if (!seen.contains(word) && isEdge(cur, word)) {
+        System.out.println("Found unseen neighbor : " + word + " for cur word " + cur + " will dfs");
+        stack.push(word);
+        
+        if (dfs(words, word, end, stack, seen)) {
+          return true;
+        }
+        
+        stack.pop();
+      }
+    }
+    
+    return false;
+  }
+  
+  static boolean isEdge(String word1, String word2) {
+    if (word1.length() != word2.length()) {
+      return false;
+    }
+    
+    int diffCount = 0;
+    for (int i = 0; i < word1.length(); i++) {
+      if (word1.charAt(i) != word2.charAt(i)) {
+        diffCount++;
+      }
+      
+      if (diffCount > 1) {
+        break;
+      }
+    }
+    
+    return (diffCount == 1);
+  }
+}
