@@ -1,0 +1,73 @@
+import java.util.*;
+
+/**
+https://leetcode.com/problems/longest-palindromic-substring/
+
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+
+bananas : anana
+forgeeksskeegfor : geeksskeeg
+
+
+Approach : Find max palindrome centered at each position in O(n) time. Also find max palindrome centered at (index, index + 1)
+to handle even length palindromes. override the global max as needed.
+
+ */
+class Solution {
+
+    public static void main(String[] args) {
+      String input = "asdaredderxczx";
+      String max = "";
+      
+      for (int i = 0; i < input.length(); i++) {
+        String curMax = getMaxPalindrome(input, i);
+        System.out.println("Local max is \'" + curMax + "\' centered at " + i);
+        
+        if (curMax.length() > max.length()) {
+          System.out.println("Found new max: " + curMax + " centered at " + i);
+          max = curMax;
+        }
+      }
+    }
+    
+    static String getMaxPalindrome(String input, int index) {
+      int left = index - 1;
+      int right = index + 1;
+      
+      
+      while (left >= 0 && right < input.length()) {
+        if (input.charAt(left) != input.charAt(right)) {
+          break;    
+        }
+        
+        left--;
+        right++;
+      }
+      
+      String oddMax = input.substring(left + 1, right);
+      
+      // if right char is same, move right index by one
+      if (index < input.length() - 2 && input.charAt(index) == input.charAt(index + 1)) {
+        left = index - 1;
+        right = index + 2;
+        
+        while (left >= 0 && right < input.length()) {
+          if (input.charAt(left) != input.charAt(right)) {
+            break;    
+          }
+
+          left--;
+          right++;
+        }
+        
+        String evenMax = input.substring(left + 1, right);
+        System.out.println("Even max: " + evenMax + " centered at " + index);
+        
+        if (evenMax.length() > oddMax.length())  {
+          return evenMax;
+        }
+      }
+      
+      return oddMax;
+    }
+}
