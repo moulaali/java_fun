@@ -54,7 +54,7 @@ class Solution {
     String end = "PLEA";
 
     if (!words.contains(end)) {
-      System.out.println("one of begin or end is not in input.");
+      System.out.println("end is not in input.");
       return;
     }
     
