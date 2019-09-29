@@ -1,0 +1,46 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/product-of-array-except-self/
+
+Given an array nums of n integers where n > 1,  return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].
+
+Example:
+
+Input:  [1,2,3,4]
+Output: [24,12,8,6]
+Note: Please solve it without division and in O(n).
+
+Follow up:
+Could you solve it with constant space complexity? (The output array does not count as extra space for the purpose of space complexity analysis.)
+
+Approaches
+
+1/ compute it as (product of all nums) / num. {this is not ok as ques asked not to use div}
+2/ Store the product (only) to the left in output array first. then update it with the product on the right.
+This will also avoid using two arrays
+ */
+class Solution {
+
+  public static void main(String[] args) {
+    int[] a = {1, 2, 3, 4};
+    int[] b = new int[a.length];
+    
+    // store left product in output array b
+    int leftProduct = 1;
+    for (int i = 0; i < a.length; i++) {
+      b[i] = leftProduct;
+      leftProduct *= a[i];
+    }
+    System.out.println("Left product : " + Arrays.toString(b));
+    
+    // Update the output array with right product value
+    int rightProduct = 1;
+    for (int i = a.length - 1; i >= 0; i--) {
+      b[i] = b[i] * rightProduct;
+      rightProduct *= a[i];
+    }
+    System.out.println("product except self : " + Arrays.toString(b));
+  }
+}
