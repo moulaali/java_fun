@@ -6,6 +6,7 @@ import java.util.*;
  * Approach:
  *  - Sort by start time
  *  - Take each meeting and check if conflicts with the meeting that is ending soon. use heap for this.
+ *  - Reason: The top of heap has min end time. if this is not free, any other room in heap is not.
  *  - If not, reuse the same room by replace the top of heap. if conflicts, assign a new room i.e. add to heap.
  *  - At the end, the heap holds the largest set of meetings that are overlapping.
  */
@@ -53,7 +54,7 @@ public class MinimumConferenceRooms {
             // conflict or first guy. we need a new room
             System.out.println("Mtg needs new room since all are busy " + mtgs[i]);
         } else {
-            // start time >= endTime of soonest one
+            // reuse the top (i.e. soonest ending). make room available.
             pq.poll();
             System.out.println("Mtg reused " + endingSoon + " for " + mtgs[i]);
         }
