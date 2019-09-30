@@ -11,7 +11,6 @@
   ** Manually verify the logic to make sure there are no bugs
   ** Do not add too many comments. wastes your time
   ** import java.util.* instead of multiple import
-  ** keep super simple names and vars
    
   
  
