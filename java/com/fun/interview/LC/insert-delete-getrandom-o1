@@ -1,0 +1,92 @@
+import java.util.*;
+
+
+/**
+https://leetcode.com/problems/insert-delete-getrandom-o1/
+
+Design a data structure that supports all following operations in average O(1) time.
+
+insert(val): Inserts an item val to the set if not already present.
+remove(val): Removes an item val from the set if present.
+getRandom: Returns a random element from current set of elements. Each element must have the same probability of being returned.
+
+Approach: use a hashmap of value -> index_in_array_list. 
+add: add a new element to arraylist and add a entry in hashmap (value -> new_index)
+remove: swap the arrayli
+*/
+
+class Solution 
+{ 
+    public static void main (String[] args) 
+    { 
+        RandomizedHashSet ds = new RandomizedHashSet(); 
+        ds.add(10); 
+        ds.add(20); 
+        ds.add(30); 
+        ds.add(40); 
+        System.out.println(ds.search(30)); 
+        ds.remove(20); 
+        ds.add(50); 
+        System.out.println(ds.search(50)); 
+        System.out.println(ds.getRandom()); 
+    }  
+
+  static class RandomizedHashSet 
+  { 
+     ArrayList<Integer> list;
+
+     HashMap<Integer, Integer>  hash; 
+
+     // Constructor (creates arr[] and hash) 
+     public MyDS() 
+     { 
+         list = new ArrayList<Integer>(); 
+         hash = new HashMap<Integer, Integer>(); 
+     } 
+
+     // A Theta(1) function to add an element to MyDS 
+     // data structure 
+     void add(int x) 
+     { 
+        if (hash.get(x) != null) 
+            return;   
+
+        int s = list.size(); 
+        list.add(x); 
+
+        hash.put(x, s); 
+     } 
+
+     void remove(int x) 
+     { 
+         Integer index = hash.get(x); 
+         if (index == null) 
+            return; 
+
+         hash.remove(x); 
+
+         // Swap/replace the element with last element
+         int size = list.size(); 
+         Integer last = list.get(size-1); 
+         Collections.swap(list, index,  size-1); 
+
+         list.remove(size-1); 
+
+         // update the index of last element
+         hash.put(last, index); 
+      } 
+
+      // Returns a random element from MyDS 
+      int getRandom() 
+      { 
+        Random rand = new Random();
+        int index = rand.nextInt(list.size()); 
+        return list.get(index); 
+      } 
+
+      Integer search(int x) 
+      { 
+         return hash.get(x); 
+      } 
+    } 
+}
