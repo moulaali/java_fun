@@ -1,0 +1,84 @@
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+
+
+/**
+https://leetcode.com/problems/encode-and-decode-tinyurl/
+
+TinyURL is a URL shortening service where you enter a URL such as https://leetcode.com/problems/design-tinyurl and it returns a short URL such as http://tinyurl.com/4e9iAk.
+
+Design the encode and decode methods for the TinyURL service. There is no restriction on how your encode/decode algorithm should work. You just need to ensure that a URL can be encoded to a tiny URL and the tiny URL can be decoded to the original URL.
+
+Approach: 
+
+Use a simple map to store random string to long url.
+random string can be a fixed K sized string. for ex: generate 6 values of 0-64
+integers. each random index can now be mapped to one of the alpha-num
+
+"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+If random string is collided (already exists), retry x times.
+
+for decoding, just lookup in hashmap.
+*/
+
+class Solution 
+{ 
+    public static void main (String[] args) throws Exception 
+    {
+      TinyUrl tinyUrl = new TinyUrl();
+      
+      String encoded = tinyUrl.encode("www.cnn.com/home");
+      System.out.println(encoded);
+      System.out.println(tinyUrl.decode(encoded));
+      System.out.println(tinyUrl.decode("www.tinyurl.com/unknown"));
+    }
+}
+
+class TinyUrl {
+  Map<String, String> urlMap;
+  static String encodingChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  private static final int MAX_ENCODING_RETRIES = 10;
+  private static final String DOMAIN_PREFIX = "www.tinyurl.com/";
+  private static final int URL_LENGTH = 6;
+  
+  TinyUrl() {
+    urlMap = new HashMap<>();
+  }
+  
+  String encode(String url) throws Exception {
+    for (int attempt = 1; attempt  <= MAX_ENCODING_RETRIES; attempt++) {
+      String key = getRandKey();
+      if (urlMap.containsKey(key)) {
+        System.out.println("key collision. retry attempt" + attempt);
+        continue;    
+      }
+     
+      urlMap.put(key, url);
+      return  DOMAIN_PREFIX + key; 
+    }
+    
+    throw new Exception("Too many collisions. Unable to encode" + url);
+  }
+  
+  static String getRandKey() {
+    StringBuilder keyBuilder = new StringBuilder();
+    for (int i =0; i < URL_LENGTH; i++) {
+      int next = ThreadLocalRandom.current().nextInt(0, encodingChars.length());
+      keyBuilder.append(encodingChars.charAt(next));
+    }
+    
+    return keyBuilder.toString();
+  }
+  
+  
+  String decode(String shortUrl) throws Exception {
+    String domainRemoved = shortUrl.replace(DOMAIN_PREFIX, "");
+    String longUrl = urlMap.getOrDefault(domainRemoved, null); 
+      if (longUrl != null) {
+        return longUrl;
+      }
+
+      throw new Exception("Unknown url: " + shortUrl);
+    }
+}
