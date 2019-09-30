@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Queue;
 
 /**
+ *
+ * https://leetcode.com/problems/binary-tree-level-order-traversal/
+ * 
+ * Given a binary tree, return the level order traversal of its nodes' values. (ie, from left to right, level by level).
  * A demo class to print a tree in level order.
  * 
  * <P>The BFS travel is managed using a {@link Queue}.
