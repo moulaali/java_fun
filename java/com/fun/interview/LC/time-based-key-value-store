@@ -44,6 +44,12 @@ The timestamps for all TimeMap.set operations are strictly increasing.
 1 <= timestamp <= 10^7
 TimeMap.set and TimeMap.get functions will be called a total of 120000 times (combined) per test case.
 *
+
+Approaches
+
+1/ Use map of key, <ts, value> and when get is called for ts, do a binary search
+2/ Use a map of key and tree map <ts, value>. treemap uses a balanced bst (rbt) and can fetch a key less than
+a value. it is called floorkey() and runs in logn time.
 */
 class Solution 
 { 
