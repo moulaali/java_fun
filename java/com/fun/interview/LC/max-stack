@@ -1,0 +1,113 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/articles/max-stack/
+
+
+Design a max stack that supports push, pop, top, peekMax and popMax.
+
+push(x) -- Push element x onto stack.
+pop() -- Remove the element on top of the stack and return it.
+top() -- Get the element on the top.
+peekMax() -- Retrieve the maximum element in the stack.
+popMax() -- Retrieve the maximum element in the stack, and remove it. If you find more than one maximum elements, only remove the top-most one.
+Example 1:
+MaxStack stack = new MaxStack();
+stack.push(5); 
+stack.push(1);
+stack.push(5);
+stack.top(); -> 5
+stack.popMax(); -> 5
+stack.top(); -> 1
+stack.peekMax(); -> 5
+stack.pop(); -> 1
+stack.top(); -> 5
+*
+
+Approach
+
+1/ Keep two stacks and keep them in sync. one stack manages the values. other one manages max value at that point 
+(i.e. all elements pushed so far).
+
+2/ 
+  push : push in value stack and push the max of (so far, value). 
+  pop : pop in both stacks
+  popMax: pop till you hit max and push to a temp stack
+
+*/
+class Solution 
+{ 
+    public static void main (String[] args) throws Exception 
+    {
+      MaxStack stack = new MaxStack();
+      
+      stack.push(6); 
+      stack.push(1);
+      stack.push(5);
+      stack.push(3);
+      stack.push(4);
+      stack.popMax(); // 6
+      stack.pop(); // 4
+    }
+}
+
+class MaxStack {
+    Stack<Integer> valueStack;
+    Stack<Integer> maxStack;
+
+    public MaxStack() {
+      valueStack = new Stack<>();
+      maxStack = new Stack<>();
+    }
+
+    public void push(Integer val) {
+      valueStack.push(val);
+      
+      maxStack.push(Math.max(val, maxStack.isEmpty() ? val : maxStack.peek()));
+      System.out.println("Pushed " + val + " stack state. valStack: " +  valueStack + " maxStack" + maxStack); 
+    }
+
+    public int pop() {
+      maxStack.pop();
+      int popped = valueStack.pop();
+      System.out.println("popped " + popped + " stack state. valStack: " +  valueStack + " maxStack" + maxStack);
+      return popped;
+    }
+  
+    public int top() {
+      return valueStack.peek();
+    }
+  
+    public int peekMax() {
+      return maxStack.peek();
+    }
+  
+    public int popMax() {
+      int max = maxStack.peek();
+      Stack<Integer> temp = new Stack<>();
+      
+      boolean maxPopped = false;
+      
+      // pop out till max and save them in temp stack
+      while (!maxPopped) {
+        int curPop = valueStack.pop();
+        maxStack.pop();
+        
+        if (curPop == max) {
+          maxPopped = true;
+        } else {
+          temp.push(curPop);
+        }
+      }
+      
+      // push them back into original stack using the push method
+      while (!temp.isEmpty()) {
+        push(temp.pop());
+      }
+      
+      System.out.println("popped max " + max + " stack state. valStack: " +  valueStack + " maxStack" + maxStack);
+      
+      return max;
+    }
+}
