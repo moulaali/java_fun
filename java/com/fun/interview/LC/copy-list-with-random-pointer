@@ -7,11 +7,41 @@ https://leetcode.com/problems/copy-list-with-random-pointer/
 Clone a linked list with next and random pointer in O(1) space
 Given a linked list having two pointers in each node. The first one points to the next node of the list, however the other pointer is random and can point to any node of the list. Write a program that deep clones
 
-Approach 1: 
+Approach 1 (Dictionary with mapping from old to new)
+----------------------------------------------------
+
 Iterate first list and create a copy node if not previously created.
 every time a copy node is created, save it in a map of old_node -> new_node 
 
 use this same mapping to build the copy.
+
+Space Complexity : O(N), 
+Time Complexity : O(N)
+
+
+Approach 2 with O(1) Space complexity (Weaving and Unweaving Approach)
+---------------------------------------------------------------------------
+
+
+This approach removes need for the hashmap by an interesting approach called weaving and unweaving.
+
+Source:
+https://leetcode.com/problems/copy-list-with-random-pointer/solution/
+
+Step 1
+Iterate the source and clone node and add as immediate next node. For ex:
+
+A->B->C becomes A->A'->B->B'->C->C'. The random pointers of A, B, C are untouched and A' B' and C' are unassigned after this step
+
+Step 2
+
+Assign random pointers for cloned nodes by using random pointer of previous node (i.e source). For ex: if A points C, 
+A'points to C'
+
+Step 3
+Unweave i.e. fix the next node to original. i.e. node.next = node.next.next;
+
+Profit !
 
 */
 class Solution 
@@ -39,11 +69,61 @@ class Solution
       node5.next = null;
       node5.random = node2;
       
+      Node copy = deepCopyWithWeaving(head1);
+      
+      System.out.println("Original List: ");
       head1.print();
-      
-      Node copy = deepCopyWithDict(head1);
-      
+      System.out.println("Copy List: ");
       copy.print();
+    }
+  
+  
+    static Node deepCopyWithWeaving(Node head) {
+      
+      Node temp = head;
+      
+      // Step 1: clone and append
+      while (temp != null) {
+        Node clone = new Node(temp.data);
+        
+        // insert as immediate next
+        clone.next = temp.next;
+        temp.next = clone;
+        
+        temp = clone.next;
+      }
+      
+      System.out.println("List of cloning and inserting as neighbor");
+      head.print();
+      
+      
+      // Step 2: Assign random 
+      temp = head;
+      
+      while (temp != null) {
+        Node clone = temp.next;
+        clone.random = temp.random.next;
+        temp = temp.next.next;
+      }
+      System.out.println("List after assigning randoms");
+      head.print();
+      
+      
+      // Step 3: Unweave or split 
+      temp = head;
+      Node copyHead = temp.next;
+      
+      while (temp != null) {
+        Node nextNode = temp.next;
+        
+        if (nextNode != null) {
+          temp.next = nextNode.next;
+        }
+        
+        temp = nextNode;
+      }
+      
+      return copyHead;
     }
   
     static Node deepCopyWithDict(Node head) {
@@ -132,7 +212,7 @@ class Node {
     
     while (temp != null) {
       System.out.print(temp.data + "(" +
-                       temp.random.data +  ")" + "->");
+                       ((temp.random == null) ? "null" : temp.random.data) +  ")" + "->");
       temp = temp.next;
     }
     
