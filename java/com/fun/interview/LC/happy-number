@@ -24,9 +24,7 @@ Input: n = 20
 Output: False
 12 + 02 + 02 = 1
 *
-
 Approach : Trivially solvable by simple hashset (seen) and looping. Slightly interesting way is to use two counters. one that does once and the other that does it twice. kind of look faster pointer and slow pointer in loop detection. In this approach, we dont need the extra memory for list. We pay for computation though.
-
 *
 */
 class Solution {
@@ -53,7 +51,6 @@ class Solution {
       }
     
     System.out.println(n + " is " + (happy ? "happy" : "not happy"));
-    
   }
   
   static int getSquareSum(int n) {
