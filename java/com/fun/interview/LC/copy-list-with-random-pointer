@@ -5,7 +5,8 @@ import java.util.*;
 https://leetcode.com/problems/copy-list-with-random-pointer/
 
 Clone a linked list with next and random pointer in O(1) space
-Given a linked list having two pointers in each node. The first one points to the next node of the list, however the other pointer is random and can point to any node of the list. Write a program that deep clones
+Given a linked list having two pointers in each node. The first one points to the next node of the list, 
+however the other pointer is random and can point to any node of the list. Write a program that deep clones
 
 Approach 1 (Dictionary with mapping from old to new)
 ----------------------------------------------------
@@ -17,7 +18,6 @@ use this same mapping to build the copy.
 
 Space Complexity : O(N), 
 Time Complexity : O(N)
-
 
 Approach 2 with O(1) Space complexity (Weaving and Unweaving Approach)
 ---------------------------------------------------------------------------
