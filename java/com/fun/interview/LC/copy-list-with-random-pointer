@@ -1,0 +1,141 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/copy-list-with-random-pointer/
+
+Clone a linked list with next and random pointer in O(1) space
+Given a linked list having two pointers in each node. The first one points to the next node of the list, however the other pointer is random and can point to any node of the list. Write a program that deep clones
+
+Approach 1: 
+Iterate first list and create a copy node if not previously created.
+every time a copy node is created, save it in a map of old_node -> new_node 
+
+use this same mapping to build the copy.
+
+*/
+class Solution 
+{ 
+    public static void main (String[] args) throws Exception 
+    {
+      Node head1 = new Node(1);
+      Node node2 = new Node(2);
+      Node node3 = new Node(3);
+      Node node4 = new Node(4);
+      Node node5 = new Node(5);
+      
+      head1.next = node2;
+      head1.random = node3;
+      
+      node2.next = node3;
+      node2.random = head1;
+      
+      node3.next = node4;
+      node3.random = node5;
+      
+      node4.next = node5;
+      node4.random = node5;
+      
+      node5.next = null;
+      node5.random = node2;
+      
+      head1.print();
+      
+      Node copy = deepCopyWithDict(head1);
+      
+      copy.print();
+    }
+  
+    static Node deepCopyWithDict(Node head) {
+      Map<Node, Node> oldToNewNodeMap = new HashMap<>();
+      
+      Node temp = head;
+      Node copy = null;
+      
+      while (temp != null) {
+        
+        // handle this node
+        Node curNode = oldToNewNodeMap.get(temp);
+       if (curNode == null) {
+         
+          System.out.println(
+            "cur Node: " + temp.data + " does not exist. created");
+          curNode = new Node(temp.data);
+          oldToNewNodeMap.put(temp, curNode);
+         
+          // also save if it is head
+          if (copy == null) {
+            copy = curNode;
+          }
+        } else {
+          System.out.println(
+            "cur Node: " + temp.data + " does exists. reusing");
+        }
+        
+        // Handle next node
+        if (temp.next != null) {
+          Node nextMapNode = oldToNewNodeMap.get(temp.next);
+
+          if (nextMapNode == null) {
+            System.out.println(
+              "next Node: " + temp.next.data + " does not exist. created");
+              
+              // next node is never created
+              Node newNext = new Node(temp.next.data);
+              curNode.next = newNext;
+              oldToNewNodeMap.put(temp.next, newNext);
+          } else {
+            // next node is already created. reuseit
+            System.out.println(
+            "next Node: " + temp.next.data + " does exists. reused");
+            curNode.next = nextMapNode;
+          }
+        }
+        
+        // Handle random node
+        if (temp.random != null) {
+          Node randMapNode = oldToNewNodeMap.get(temp.random);
+          if (randMapNode == null) {
+               System.out.println(
+              "rand Node: " + temp.random.data + " does not exist. created");
+              // rand node is never created
+              Node newRand = new Node(temp.random.data);
+              curNode.random = newRand;
+              oldToNewNodeMap.put(temp.random, newRand);
+          } else {
+            curNode.random = randMapNode;
+             System.out.println(
+            "rand Node: " + temp.random.data + " exists. reused");
+          }
+        }
+
+        temp = temp.next;
+      }
+
+      return copy;
+    }
+}
+
+class Node {
+  int data;
+  Node next;
+  Node random;
+  
+  Node(int data) {
+    this.data = data;
+    this.next = null;
+    this.random = null;
+  }
+  
+  void print() {
+    Node temp = this;
+    
+    while (temp != null) {
+      System.out.print(temp.data + "(" +
+                       temp.random.data +  ")" + "->");
+      temp = temp.next;
+    }
+    
+    System.out.println("");
+  }
+}
