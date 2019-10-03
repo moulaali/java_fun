@@ -1,0 +1,113 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/find-all-anagrams-in-a-string/
+
+
+Given a string s and a non-empty string p, find all the start indices of p's anagrams in s.
+
+Strings consists of lowercase English letters only and the length of both strings s and p will not be larger than 20,100.
+
+The order of output does not matter.
+
+Example 1:
+
+Input:
+s: "cbaebabacd" p: "abc"
+
+Output:
+[0, 6]
+
+Explanation:
+The substring with start index = 0 is "cba", which is an anagram of "abc".
+The substring with start index = 6 is "bac", which is an anagram of "abc".
+Example 2:
+
+Input:
+s: "abab" p: "ab"
+
+Output:
+[0, 1, 2]
+
+Explanation:
+The substring with start index = 0 is "ab", which is an anagram of "ab".
+The substring with start index = 1 is "ba", which is an anagram of "ab".
+The substring with start index = 2 is "ab", which is an anagram of "ab".
+
+Approach:
+
+build a freq map of chars for pattern.
+
+Now have a sliding window of chars. after every window compare the maps.
+Now slide the window right by 1 char by remove left char and adding right char. compare the character frequencies till end.
+*/
+class Solution 
+{ 
+    public static void main (String[] args) throws Exception 
+    {
+      String input = "ffffabcd";
+      String pattern = "dcba";
+      List<Integer> indices = new ArrayList<>();
+      
+      int len = pattern.length();
+      Map<Character, Integer> patternMap = new HashMap<>();
+      
+      for (int i = 0; i < len; i++) {
+        Character c = pattern.charAt(i);
+        patternMap.put(c, patternMap.getOrDefault(c, 0) + 1); 
+      }
+      System.out.println("Pattern map: " + patternMap);
+      
+      int begin = 0;
+      int end = 0;
+      
+      // create first window
+      Map<Character, Integer> windowMap = new HashMap<>();
+      while (end < len && end < input.length()) {
+        Character c = input.charAt(end);
+        windowMap.put(c, windowMap.getOrDefault(c, 0) + 1);
+        end++;
+      }
+      System.out.println("First Window map: " + windowMap);
+      
+      // keep sliding and checking
+      end--;
+      while (end < input.length()) {
+        Character beginChar = input.charAt(begin);
+        Character endChar = input.charAt(end);
+        
+        System.out.println("current window chars " 
+                                   + beginChar + " " + endChar
+                          + " Map " + windowMap);
+        
+        if (patternMap.equals(windowMap)) {
+          System.out.println(
+            "Anagram found at " + begin + " " 
+                             + input.substring(begin, end + 1));
+          indices.add(begin);
+        }
+        
+        // skip sliding we reached end
+        if (end == input.length() - 1) {
+          end++;
+          continue;
+        }
+        
+        // Remove begin char and move by 1
+        windowMap.put(beginChar,  windowMap.get(beginChar) - 1);
+        if (windowMap.get(beginChar) == 0) {
+          windowMap.remove(beginChar);
+        }
+        begin++;
+        
+        // Add end + 1 char and move end by 1
+        Character nextEndChar = input.charAt(end + 1);
+        windowMap.put(nextEndChar, 
+                      windowMap.getOrDefault(nextEndChar, 0) + 1);
+        end++;
+      }
+    
+      System.out.println("Indices : " + indices);
+    }
+}
