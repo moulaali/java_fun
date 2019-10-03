@@ -1,0 +1,52 @@
+import java.util.*;
+
+/**
+https://leetcode.com/problems/3sum-closest/
+
+Given array nums = [-1, 2, 1, -4], and target = 1.
+
+The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+
+Approach: 
+
+1/ Sort
+2/ Iterate over array and for each i, find closest two sum from i + 1 to n-1.
+keep overriding the min. 
+
+ ** Remember to use Math.abs() as we want the closest :)
+ 
+*/
+class Solution 
+{ 
+    public static void main (String[] args) throws Exception 
+    {
+      int[] a = {-1, 2, 1, -4};
+      int target = 1;
+      int minDiff = Integer.MAX_VALUE;
+      
+      Arrays.sort(a);
+      
+      for (int i = 0; i < a.length; i++) {
+        
+        int begin = i + 1;
+        int end = a.length - 1;
+        
+        while (begin < end) {
+          int current = a[i] + a[begin] + a[end];
+          
+          if (Math.abs(target - current) < minDiff) {
+            System.out.println("Found better triplet " + a[i] + " " + a[begin] + " " + a[end]);         
+            minDiff = Math.abs(target - current);
+          }
+          
+          if (current > target) {
+            end--;
+          } else {
+            begin++;
+          }
+        }
+      }
+      
+      System.out.println("Min diff " + minDiff);
+    }
+}
