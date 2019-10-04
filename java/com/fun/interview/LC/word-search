@@ -1,0 +1,138 @@
+import java.util.*;
+
+/**
+https://leetcode.com/problems/word-search/
+
+Given a 2D board and a word, find if the word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+Example:
+
+board =
+Input:  grid[][] = {"GEEKSFORGEEKS",
+                    "GEEKSQUIZGEEK",
+                    "IDEQAPRACTICE"};
+        word = "GEEKS"
+
+Output: pattern found at 0, 0
+        pattern found at 0, 8
+        pattern found at 1, 0
+
+Approach :
+
+Iterate over all positions and do dfs for position 0.
+if char matches at that position, do dfs at position + 1 for each neighbor. 
+
+Interesting part is to keep visit state. mark visited as false during back tracking.
+*/
+class Solution 
+{ 
+    public static void main (String[] args) throws Exception 
+    {
+      char[][] board = {
+        {'G','E','E','K','S','F','O','R','G','E','E','K','S'}, 
+        {'G','E','E','K','S','Q','U','I','Z','G','E','E','K'}, 
+        {'I','D','E','Q','A','P','R','A','C','T','I','C','E'}}; 
+      
+      String word = "GEEKS";
+      
+      boolean[][] visited = new boolean[board.length][board[0].length];
+      for (int k = 0; k < board.length; k++) {
+        for (int l = 0; l < board[0].length; l++) {
+          visited[k][l] = false;  
+        }
+      }
+      
+      List<Position> positions = new ArrayList<>();
+      for (int i = 0; i < board.length; i++) {
+        for (int j = 0; j < board[i].length; j++) {
+          boolean found = dfs(board, word, i, j, visited, 0, positions);
+          if (found) {
+            positions.add(new Position(i, j));
+          }
+        }
+      }
+      
+      System.out.println("\n\nPositions " + positions);
+    }
+  
+    static boolean dfs(
+      char[][] board, String word, int r, int c, boolean[][] visited, int position,
+      List<Position> positions) {
+      
+      boolean found = false;
+      
+      // char match
+      if (!visited[r][c] && board[r][c] == word.charAt(position)) {
+        
+         System.out.println("char matched " + board[r][c] + " at " + r + " " + c + " for position " + position);
+        
+        // reached end
+        if (position == word.length() - 1) {
+          System.out.println("Whole word found at end: " + r  + " " + c);
+          return true;
+        }
+        
+        // mark as visited and dfs for next char
+        visited[r][c] = true;
+
+        // try right neighbor
+        if (c + 1 <= board[0].length - 1) {
+          found = dfs(board, word, r, c + 1, visited, position + 1, positions);
+          visited[r][c] = false;  
+          
+          if (found) {
+            return true;
+          }
+        }
+
+        // try left neigbor
+        if (c -1 >= 0) {
+          found = dfs(board, word, r, c - 1, visited, position + 1, positions);
+          visited[r][c] = false;  
+          
+          if (found) {
+            return true;
+          }
+        }
+
+        // try top neigbor
+        if (r -1 >= 0) {
+          found = dfs(board, word, r - 1, c, visited, position + 1, positions);
+          visited[r][c] = false;  
+          
+          if (found) {
+            return true;
+          }
+        }
+
+        // try bottom neigbor
+        if (r + 1 <= board.length - 1) {
+          found = dfs(board, word, r + 1, c, visited, position + 1, positions);
+          visited[r][c] = false;  
+          
+          if (found) {
+            return true;
+          }
+        }
+      } 
+      
+      return false;
+    }
+}
+
+class Position {
+  int r;
+  int c;
+  
+  public Position(int r, int c) {
+    this.r = r;
+    this.c = c;
+  }
+  
+  @Override
+  public String toString() {
+    return "(" + r + "," + c + ")";
+  }
+}
