@@ -1,0 +1,126 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/flatten-nested-list-iterator/
+
+Given a nested list of integers, implement an iterator to flatten it.
+
+Each element is either an integer, or a list -- whose elements may also be integers or other lists.
+
+Example 1:
+
+Input: [[1,1],2,[1,1]]
+Output: [1,1,2,1,1]
+Explanation: By calling next repeatedly until hasNext returns false, 
+             the order of elements returned by next should be: [1,1,2,1,1].
+Example 2:
+
+Input: [1,[4,[6]]]
+Output: [1,4,6]
+Explanation: By calling next repeatedly until hasNext returns false, 
+             the order of elements returned by next should be: [1,4,6].
+
+Approach:
+
+Manage a stack of iterators. push the top iterator. 
+hasNext() : keep checking the top, if no next, pop it out as it exhausted.
+repeat till stack is empty
+next(): is top's next is integer, return it. if not, push the iterator to
+stack
+
+*/
+class Solution 
+{ 
+  public static void main (String[] args) throws Exception 
+  {
+    // [2, 3, [1, 1], [[7, 8], 1, 1]]
+    // 2, 3, 1, 1, 7, 8, 1, 1, 
+    
+    List<Entry> nested = new ArrayList<>();
+    List<Entry> list1 = new ArrayList<>();
+    List<Entry> list2 = new ArrayList<>();
+    List<Entry> list2sub1 = new ArrayList<>();
+    
+    list1.add(new Entry(1));
+    list1.add(new Entry(1));
+    
+    list2sub1.add(new Entry(7));
+    list2sub1.add(new Entry(8));
+    list2.add(new Entry(list2sub1));
+    list2.add(new Entry(1));
+    list2.add(new Entry(1));
+    
+    nested.add(new Entry(2));
+    nested.add(new Entry(3));
+    nested.add(new Entry(list1));
+    nested.add(new Entry(list2));
+  
+    System.out.println("Nested list" + nested);
+    
+    NestedIterator iterator = new NestedIterator(nested);
+    
+    while (iterator.hasNext()) {
+      System.out.print(iterator.next() + ", ");
+    } // 2, 3, 1, 1, 7, 8, 1, 1, 
+  }
+}
+
+class NestedIterator {
+  
+  List<Entry> nested;
+  Stack<Iterator<Entry>> stack;
+  
+  public NestedIterator(List<Entry> nested) {
+    this.nested = nested;
+    stack = new Stack<>();
+    stack.push(nested.iterator());
+  }
+  
+  public boolean hasNext() {
+    while (!stack.isEmpty()) {
+      Iterator<Entry> top = stack.peek();
+    
+      if (top.hasNext()) {
+        return true;
+      }
+      stack.pop();
+    }
+    
+    return false;
+  }
+  
+  public Integer next() {
+    while (hasNext()) {
+      Entry top = stack.peek().next();
+    
+      if (top.integer != null) {
+        return top.integer;
+      }
+    
+      stack.push(top.list.iterator());
+    }
+    
+    return null;
+  }
+}
+
+class Entry {
+  Integer integer;
+  List<Entry> list;
+  
+  public Entry(Integer val) {
+    this.integer = val;
+    this.list = null;
+  }
+  
+  public Entry(List<Entry> list) {
+    this.list = list;
+    this.integer = null;
+  }
+  
+  @Override
+  public String toString() {
+    return (integer == null ? list.toString() : String.valueOf(integer));
+  }
+}
