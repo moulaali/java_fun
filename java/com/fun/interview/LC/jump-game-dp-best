@@ -1,0 +1,67 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/jump-game/
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+Each element in the array represents your maximum jump length at that position.
+
+Determine if you are able to reach the last index.
+
+Example 1:
+
+Input: [2,3,1,1,4]
+Output: true
+Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+
+Approach 1:
+
+Dynamic programming O(n^2)
+
+For each element i, calculate min jumps to i. go over all previous elements and see if you can jump to
+i. pick the one which is the least
+
+Approach 2:
+
+Model the hops as a graph and do dfs or bfs search from source to destination.
+
+*/
+class Solution 
+{ 
+  public static void main (String[] args) throws Exception 
+  {
+    int[] input = {3, 1, 1, 3, 1, 5, 2, 1};  // 3
+    
+    System.out.println(dp(input));
+  }
+  
+  static int dp(int[] input) {
+    
+    int[] jumps = new int[input.length];
+    int[] prev = new int[input.length];
+    
+    jumps[0] = 0;
+    for (int i = 1; i < input.length; i++) {
+      jumps[i] = Integer.MAX_VALUE;
+      
+      System.out.println("Finding min hops for " + i);
+      
+      // Go over my previous indices and use the least one to reach me
+      for (int j = 0; j < i; j++) {
+        if (jumps[j] != Integer.MAX_VALUE && (j + input[j] >= i)) {
+          // hop possible
+          if (jumps[j] + 1 < jumps[i]) {
+            System.out.println("Found new min hop via " + j + " to " + i + " hops : " + (jumps[j] + 1));
+            // new min jumps
+            jumps[i] = jumps[j] + 1;
+            prev[i] = j;
+          }
+        }
+      }
+    }
+    
+    return jumps[input.length - 1];
+  }  
+}
