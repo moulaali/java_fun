@@ -1,0 +1,128 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/jump-game/
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+Each element in the array represents your maximum jump length at that position.
+
+Determine if you are able to reach the last index.
+
+Example 1:
+
+Input: [2,3,1,1,4]
+Output: true
+Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+
+Approach:
+Model the hops as a graph and do dfs or bfs search from source to destination.
+
+Approach 2:
+
+Dynamic programming
+*/
+class Solution 
+{ 
+  public static void main (String[] args) throws Exception 
+  {
+    int[] input = {3, 1, 1, 3, 1, 5, 2, 1};  // true
+    
+    // convert to graph to reachability
+    Map<Integer, List<Integer>> jumpGraph = toGraph(input);
+    
+    // initialize visited array
+    boolean[] visited = new boolean[input.length];
+    for (int i = 0; i < visited.length; i++) {
+      visited[i] = false;
+    }
+    
+    // BFS search 
+    List<Integer> path = new ArrayList<>();
+    System.out.println(bfs(jumpGraph, 0, input.length - 1, visited));
+    System.out.println("path: " + path);
+  }
+  
+  static Map<Integer, List<Integer>> toGraph(int[] input) {
+    Map<Integer, List<Integer>> jumpGraph = new HashMap<>();
+    
+    // constructor graph. nodes are indices and edges are possible hops
+    for (int i = 0; i < input.length; i++) {
+      jumpGraph.putIfAbsent(i, new ArrayList<>());   
+      
+      // Add all possible jumps
+      for (int j = 1; j <= input[i]; j++) {
+        if (i + j < input.length) {
+          jumpGraph.get(i).add(i + j); 
+        }
+      }
+    }
+    
+    System.out.println("Jump graph : " + jumpGraph);
+    return jumpGraph;
+  }
+  
+  static boolean bfs(Map<Integer, List<Integer>> jumpGraph, int from, int to, boolean[] visited) {
+    
+    Queue<Integer> queue = new LinkedList<>();
+    queue.add(from);
+    int[] prev = new int[jumpGraph.keySet().size()];
+    
+    boolean found = false;
+    while (!queue.isEmpty()) {
+      Integer current = queue.remove();
+      visited[current] = true;
+      
+      if (current == to) {
+        found = true;
+        break;
+      }
+      
+      for (Integer hopIndex : jumpGraph.get(current)) {
+        if (!visited[hopIndex]) {
+          queue.add(hopIndex);
+          prev[hopIndex] = current;
+        }
+      }
+    }
+    
+    if (!found) {
+      return false;
+    }
+    
+    Integer previous = prev[to];
+    System.out.print(to + " ");
+    do {
+      System.out.print(previous + " ");
+      previous = prev[previous];
+    } while (previous != from);
+    System.out.print(from + " ");
+    
+    return true;
+  }
+  
+  static boolean dfs(Map<Integer, List<Integer>> jumpGraph, int from, int to, 
+                     boolean[] visited, List<Integer> path) {
+    visited[from] = true;
+    
+    if (from == to) {
+      return true;
+    }
+    
+    for (Integer hopIndex : jumpGraph.get(from)) {
+      if (!visited[hopIndex]) {
+        path.add(hopIndex);
+        boolean reached = dfs(jumpGraph, hopIndex, to, visited, path);
+        
+        if (reached) {
+          return true;
+        }
+        
+        path.remove(hopIndex);
+      }
+    }
+    
+    return false;
+  }
+}
