@@ -3,6 +3,7 @@
 * Jump to coding problem as soon as you can
 
 * Coding
+
   ** Ask clarifying questions before jumping to answer 
   ** Keep simple names. (length, input, start, end, max, etc)
   ** break into small functions and test each one before writing the whole program
@@ -12,5 +13,8 @@
   ** Do not add too many comments. wastes your time
   ** import java.util.* instead of multiple import
    
+* Solve unknown problems
+  ** Solve it yourselves and see the pattern you are using
+  ** Try to relate with other standard patterns : Graph search, tree, stack etc
   
  
