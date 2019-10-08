@@ -32,7 +32,12 @@ Add the jumps to queue. keep removing and see if we can jump farther (or end).
 */
 public class Solution {
   public static void main(String[] args) {
-    List<String> words = List.of("cats", "dog", "sand", "and", "cat");
+    List<String> words = List.of(
+      "cats",
+      "dog",
+      "sand",
+      "and",
+      "cat");
     String s = "catsanddog";
     
     Queue<Integer> q = new LinkedList<>();
