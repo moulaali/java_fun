@@ -23,7 +23,6 @@ Example 3:
 Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
 Output: false
 
-
 Approach
 
 This is same as jump game. start from index i, all the valid jumps are the ones
@@ -43,8 +42,7 @@ public class Solution {
     for (int i = 0; i < s.length(); i++) {
       visited[i] = false;
     }
-    
-    
+   
     while (!q.isEmpty()) {
       int index = q.remove();
       
