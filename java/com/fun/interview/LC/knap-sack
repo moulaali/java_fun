@@ -1,0 +1,53 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+
+/**
+ * Zero-One knapsack algorithm
+ */
+public class Solution {
+
+    public static void main(String[] args) {
+        
+        Item[] testItems1 = {new Item(60, 10), new Item(100, 20), new Item(120, 30)};
+        System.out.println(knapsack(testItems1, 50));  // 220
+        
+        Item[] testItems2 = {new Item(100, 10), new Item(280, 40), new Item(120, 20)};
+        System.out.println(knapsack(testItems2, 60));  // 400
+    }
+    
+    private static int knapsack(Item[] items, int maxWeight) {
+        int[][] maxValue = new int[maxWeight + 1][items.length];
+        for (int w = 1; w <= maxWeight; w++) {
+            for (int j = 1; j < items.length; j++) {
+                if (items[j].weight > w) {
+                    // Too heavy, choose skipping
+                    maxValue[w][j] = maxValue[w][j-1]; 
+                } else {
+                    // Pick between value of skipping : we get more capacity for all other items
+                    // or selecting: we get w-items_wieght for other items but add items_value
+                    maxValue[w][j] = Math.max(
+                      maxValue[w][j-1], 
+                      maxValue[w-items[j].weight][j - 1] + items[j].value);
+                }
+            }
+        }
+        
+        return maxValue[maxWeight][items.length - 1];
+    }
+    
+    private static class Item {
+        int value;
+        int weight;
+        
+        public Item(int value, int item) {
+            this.value = value;
+            this.weight = item;
+        }
+    }
+}
