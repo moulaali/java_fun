@@ -1,4 +1,5 @@
-* Move Fast. Do not spend too much time for previous projects and experience. 
+* MOVE FAST. Do not spend too much time for previous projects and experience. 
+* TIME CHECK
 
 * Jump to coding problem as soon as you can
 
@@ -16,5 +17,6 @@
 * Solve unknown problems
   ** Solve it yourselves and see the pattern you are using
   ** Try to relate with other standard patterns : Graph search, tree, stack etc
+  ** Keep a time check, if you are too close, dont worry about optmizations, make it work.
   
  
