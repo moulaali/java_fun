@@ -37,7 +37,15 @@ The root-to-leaf path 4->9->1 represents the number 491.
 The root-to-leaf path 4->0 represents the number 40.
 Therefore, sum = 495 + 491 + 40 = 1026.
 
-*
+Approach :
+
+1/ call sum(root, 0)
+2/ call sum(node.left, 10 * sum + node.value) + sum(node.right, 10 * sum + node.value)
+
+
+TODO(moulaali): Build the tree and make this working
+
+*/
 
 public int sumNumbers(TreeNode root) {
     return sumNodes(root, 0);
