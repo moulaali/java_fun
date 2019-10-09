@@ -1,0 +1,87 @@
+import java.io.*;
+
+/**
+ * Find LCA in Binary Tree. 
+ 
+ * Approach:
+ *
+ * Starting with root, search lst and rst. if both are not null, this is lca.
+ * if both are null, return null. if either of them is not null (i.e found), 
+ * return that node. since recursion goes botton up, the first node that finds 
+ * the nodes on either sides is LCA. All other searches will return null. 
+ * lca will be returned back all the way up.
+ *
+ * This only works if both nodes are in tree.
+ */
+public class Solution {
+
+    public static void main(String[] args) {
+        Node root = new Node(3);
+      
+        Node node_4 = new Node(4);
+        Node node_5 = new Node(5);
+      
+        root.addLeft(node_4);
+        root.addRight(node_5);
+      
+        Node node_6 = new Node(6);
+        Node node_7 = new Node(6);
+        node_4.addLeft(node_6);
+        node_4.addRight(node_7);
+      
+        node_5.addLeft(new Node(8));
+        node_5.addRight(new Node(9));
+              
+        System.out.println("LCA of 6 and 7 " + lca(root, node_6, node_7)); 
+    }
+    
+    private static class Node {
+        int data;
+        Node left;
+        Node right;
+        
+        Node(int data) {
+            this.data = data;
+            left = null;
+            right = null;
+        }
+        
+        Node addLeft(Node child) {
+            this.left = child;
+            return child;
+        }
+        
+        Node addRight(Node child) {
+            this.right = child;
+            return child;
+        }
+        
+        @Override
+        public String toString() {
+            return String.valueOf(this.data);
+        }
+    }    
+    
+    static Node lca(Node root, Node n1, Node n2) {
+      if (root == null) {
+        return null;
+      }
+      
+      if (root.left == n1 || root.right == n2) {
+        return root;
+      }
+      
+      Node left = lca(root.left, n1, n2);
+      Node right = lca(root.right, n1, n2);
+      
+      if (left != null && right != null) {
+        return root;  // this is lca
+      }
+      
+      if (left == null) {
+        return right;
+      }
+      
+      return left;
+    }
+}
