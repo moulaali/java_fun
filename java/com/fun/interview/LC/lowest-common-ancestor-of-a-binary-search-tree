@@ -1,0 +1,142 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ * https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+ *
+ * Approach:
+ *
+ * 1/ start with root, if both values are less that current node, lca should be on left
+ * 2/ If both are greater, lca should be on right
+ * 3/ if each one is on other side, the current node is lca.
+ *
+ */
+public class LowestCommonAncestorBst {
+
+    public static void main(String[] args) {
+        // Reference Tree : http://btechsmartclass.com/DS/U5_T1.html
+        Node root = buildTestTree();
+        
+        System.out.println("LCA of 5 and 12 is: " + Node.lca(root, 5, 12));   // 10
+        System.out.println("LCA of 5 and 12 is: " + Node.lca(root, 28, 50));  // 36
+        System.out.println("LCA of 5 and 12 is: " + Node.lca(root, 10, 15));  // 10
+    }
+    
+    private static class Node {
+        int data;
+        Node left;
+        Node right;
+        Node parent;
+        
+        Node(int data) {
+            this.data = data;
+            left = null;
+            right = null;
+            parent = null;
+        }
+        
+        Node addLeft(Node child) {
+            child.parent = this;
+            this.left = child;
+            return child;
+        }
+        
+        Node addRight(Node child) {
+            child.parent = this;
+            this.right = child;
+            return child;
+        }
+        
+        static Node newMarkerNode() {
+            return new Node(Integer.MIN_VALUE);
+        }
+        
+        boolean isMarkerNode() {
+            return (data == Integer.MIN_VALUE);
+        }
+        
+        @Override
+        public String toString() {
+            return String.valueOf(this.data);
+        }
+        
+        static Node lca(Node source, int a, int b) {
+            if (source == null) {
+                return null;
+            }
+            
+            if (a < source.data && b < source.data) {
+                return lca(source.left, a, b);  // Both nodes are in LST
+            }
+            
+            if (a > source.data && b > source.data) {
+                return lca(source.right, a, b);  // Both nodes are in RST
+            }
+            
+            // One is on left or one is right. or we find a match
+            return source;
+        }
+    }
+    
+    
+    static Node buildTestTree() {
+        
+        // Reference : http://btechsmartclass.com/DS/U5_T1.html
+        
+        Node root_25 = new Node(25);
+        
+        // Left subtree
+        Node node_20 = new Node(20);
+        root_25.addLeft(node_20);
+        
+        Node node_10 = new Node(10);
+        Node node_22 = new Node(22);
+        node_20.addLeft(node_10);
+        node_20.addRight(node_22);
+        
+        Node node_5 = new Node(5);
+        Node node_12 = new Node(12);
+        node_10.addLeft(node_5);
+        node_10.addRight(node_12);
+        
+        
+        Node node_1 = new Node(1);
+        Node node_8 = new Node(8);
+        node_5.addLeft(node_1);
+        node_5.addRight(node_8);
+        
+        
+        Node node_15 = new Node(15);
+        node_12.addRight(node_15);
+        
+        
+        // Right subtree
+        Node node_36 = new Node(36);
+        root_25.addRight(node_36);
+        
+        Node node_30 = new Node(30);
+        Node node_40 = new Node(40);
+        node_36.addLeft(node_30);
+        node_36.addRight(node_40);
+        
+        Node node_28 = new Node(28);
+        node_30.addLeft(node_28);
+        
+        Node node_38 = new Node(38);
+        Node node_48 = new Node(48);
+        node_40.addLeft(node_38);
+        node_40.addRight(node_48);
+        
+        Node node_45 = new Node(45);
+        Node node_50 = new Node(50);
+        node_48.addLeft(node_45);
+        node_48.addRight(node_50);
+        
+        return root_25;
+    }
+}
