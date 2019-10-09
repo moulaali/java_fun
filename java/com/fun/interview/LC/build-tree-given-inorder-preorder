@@ -1,0 +1,138 @@
+import java.util.*;
+
+/**
+
+Given inorder and post order, output the tree
+Input : 
+in-order:   4 2 5 (1) 6 7 3 8
+pre-order: (1) 2 4 5  3 7 6 8
+
+Output : Root of below tree
+          1
+       /     \
+     2        3
+   /    \   /   \
+  4     5   7    8
+           /
+          6   
+
+Approach : 
+1/ Try to solve the manually
+2/ If so, we can see the first node of pre-order is root. search for that node in in-order.
+3/ The list on left of the in-order is lst and right is rst. now build the tree with lst and rst.
+
+ */
+public class Solution {
+
+    public static void main(String[] args) {
+      int[] pre = {1, 2, 4, 5, 3, 7, 6, 8};
+      int[] in = {4, 2, 5, 1, 6, 7, 3, 8};
+      
+      System.out.println(Arrays.binarySearch(in, 3));
+      
+      Node  root = buildTree(pre, in);
+      root.printInOrder();
+    }
+    
+    static Node buildTree(int[] pre, int[] in) {
+      
+      System.out.println("buildTree called for pre: " + Arrays.toString(pre) + " in: " + Arrays.toString(in));
+      
+      if (pre.length == 0) {
+        return null;
+      }
+      
+      if (pre.length == 1) {
+        return new Node(pre[0]);
+      }
+      
+      // first node in pre-order is root
+      int rootData = pre[0];
+      Node root = new Node(rootData);
+      
+      // find root in in-order to find lst and mst arrays
+      int rootIndex = -1;
+      for (int i = 0; i < in.length; i++) {
+        if (in[i] == rootData) {
+          rootIndex = i;
+          break;
+        }
+      }
+      
+      System.out.println("Root index found at : " + rootIndex + " for rootData " + rootData);
+      
+      Node left = buildTree(
+        Arrays.copyOfRange(pre, 1, rootIndex + 1),
+        Arrays.copyOfRange(in, 0, rootIndex));
+      Node right = buildTree(
+        Arrays.copyOfRange(pre, rootIndex + 1, pre.length),
+        Arrays.copyOfRange(in, rootIndex + 1, in.length));
+      
+      root.addLeft(left);
+      root.addRight(right);
+      
+      return root;
+    }
+  
+    private static class Node {
+        int data;
+        Node left;
+        Node right;
+        
+        Node(int data) {
+            this.data = data;
+            left = null;
+            right = null;
+        }
+        
+        Node addLeft(Node child) {
+            this.left = child;
+            return child;
+        }
+        
+        Node addRight(Node child) {
+            this.right = child;
+            return child;
+        }
+        
+        @Override
+        public String toString() {
+            return String.valueOf(this.data);
+        }
+      
+        void printInOrder() {
+          if (left != null) {
+            left.printInOrder();
+          }
+          
+          System.out.print(data + ",");
+          
+          if (right != null) {
+            right.printInOrder();
+          }
+        }
+    }    
+    
+    static Node lca(Node root, Node n1, Node n2) {
+      if (root == null) {
+        return null;
+      }
+      
+      if (root.left == n1 || root.right == n2) {
+        return root;
+      }
+      
+      Node left = lca(root.left, n1, n2);
+      Node right = lca(root.right, n1, n2);
+      
+      if (left != null && right != null) {
+        return root;  // this is lca
+      }
+      
+      if (left == null) {
+        return right;
+      }
+      
+      return left;
+    }
+}
