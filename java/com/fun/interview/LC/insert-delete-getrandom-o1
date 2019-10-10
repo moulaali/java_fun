@@ -1,7 +1,7 @@
 import java.util.*;
 
-
 /**
+
 https://leetcode.com/problems/insert-delete-getrandom-o1/
 
 Design a data structure that supports all following operations in average O(1) time.
@@ -12,9 +12,10 @@ getRandom: Returns a random element from current set of elements. Each element m
 
 Approach: use a hashmap of value -> index_in_array_list. 
 add: add a new element to arraylist and add a entry in hashmap (value -> new_index)
-remove: swap the arrayli
-*/
+remove: swap the last item with removed item. remove from hashmap.
+update the index of last item to the index of removed item
 
+*/
 class Solution 
 { 
     public static void main (String[] args) 

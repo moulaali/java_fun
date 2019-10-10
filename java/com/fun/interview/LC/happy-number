@@ -7,7 +7,12 @@ import com.google.common.collect.ImmutableList;
 *
 * https://leetcode.com/problems/happy-number/
 
-A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
+A happy number is a number defined by the following process: 
+Starting with any positive integer, replace the number by the 
+sum of the squares of its digits, and repeat the process 
+until the number equals 1 (where it will stay), 
+or it loops endlessly in a cycle which does not include 1. 
+Those numbers for which this process ends in 1 are happy numbers.
 
 Example: 
 
@@ -24,7 +29,15 @@ Input: n = 20
 Output: False
 12 + 02 + 02 = 1
 *
-Approach : Trivially solvable by simple hashset (seen) and looping. Slightly interesting way is to use two counters. one that does once and the other that does it twice. kind of look faster pointer and slow pointer in loop detection. In this approach, we dont need the extra memory for list. We pay for computation though.
+
+Approach : 
+Trivially solvable by simple hashset (seen) and looping. 
+Slightly interesting way is to use two counters. 
+one that does once and the other that does it twice. 
+Similar to faster pointer and slow pointer in loop detection. 
+In this approach, we dont need the extra memory for list. 
+We pay for computation though.
+
 *
 */
 class Solution {
@@ -36,7 +49,8 @@ class Solution {
       int j = n;
       while(!happy) {
         i = getSquareSum(i);
-        j = getSquareSum(getSquareSum(j));  // simulate loop detection by moving the second pointer faster
+        // simulate loop detection by moving the second pointer faster
+        j = getSquareSum(getSquareSum(j)); 
         
         System.out.println("i = " + i + " j = " + j);
         

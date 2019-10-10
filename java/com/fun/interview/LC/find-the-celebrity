@@ -16,7 +16,9 @@ You are given a helper function bool knows(a, b) which tells you whether A knows
 
  * Approach: Two pass check. 
  
- first pass : line the people up, check if first person knows second one. if he does, he is not celebrity. if he is, second person is not celebrity for sure. at the end we will have a "possible" celebrity
+ first pass : line the people up, check if first person knows second one. 
+ if he does, he is not celebrity. if he is, second person is not celebrity 
+ for sure. at the end we will have a "possible" celebrity
  
  second pass: confirm that the guess is right by reasking everyone. 
  this is because, we have not checked the probable one with everyone

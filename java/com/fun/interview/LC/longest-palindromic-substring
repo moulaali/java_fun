@@ -9,8 +9,9 @@ bananas : anana
 forgeeksskeegfor : geeksskeeg
 
 
-Approach : Find max palindrome centered at each position in O(n) time. Also find max palindrome centered at (index, index + 1)
-to handle even length palindromes. override the global max as needed.
+Approach : Find max palindrome centered at each position in O(n) time. 
+Also find max palindrome centered at (index, index + 1)
+to handle even length palindromes. Override the global max as needed.
 
  */
 class Solution {

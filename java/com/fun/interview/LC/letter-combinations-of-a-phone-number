@@ -50,7 +50,8 @@ class Solution {
   }
   
   static void printLetterCombs(String input, char[] stack) {
-    System.out.println("print called with " + input + " " + " stack " + Arrays.toString(stack));
+    System.out.println("print called with " + input + " " 
+        + " stack " + Arrays.toString(stack));
     
     if (input.isEmpty()) {
       outputs.add(new String(stack));
