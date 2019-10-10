@@ -1,0 +1,103 @@
+import java.io.*;
+import java.util.*;
+
+/**
+
+We have a neardup pipeline at Pinterest, which produces a mapping from every image to a list of up to k near-duplicate images, such as:
+
+A -> [B, I, K]
+B -> [A, D]
+C -> [E]
+D -> []
+E -> []
+F -> []
+G -> [K]
+I -> []
+K -> []
+
+Answer:  (A, B, D, I, G, K), (C, E), and (F).
+
+*/
+
+class Solution {
+  public static void main(String[] args) {
+    
+    Map<Character, List<Character>> map = new HashMap<>();
+    
+    map.put('A', new ArrayList<>());
+    map.get('A').addAll(List.of('B', 'K', 'I'));
+    
+    map.put('B', new ArrayList<>());
+    map.get('B').addAll(List.of('A', 'D'));
+
+    map.put('C', new ArrayList<>());
+    map.get('C').addAll(List.of('E'));
+    
+    map.put('D', new ArrayList<>());
+    map.put('E', new ArrayList<>());
+    map.put('F', new ArrayList<>());
+    
+    map.put('G', new ArrayList<>());
+    map.get('G').addAll(List.of('K'));
+    
+    map.put('I', new ArrayList<>());
+    map.put('K', new ArrayList<>());
+    
+    System.out.println("similarity graph " + map);
+    
+    // Add missing edges for transitivity
+    for (Character c : map.keySet()) {
+      List<Character> values = map.get(c);
+      
+      for (Character v : values) {
+        
+        if (map.getOrDefault(v, new ArrayList<>()).contains(c)) {
+          continue;
+        }
+        
+        map.getOrDefault(v, new ArrayList<>()).add(c);
+      }
+    }
+    
+    System.out.println("Augmented similarity graph " + map);
+
+    Set<Character> visited = new HashSet<>();
+    List<List<Character>> clusters = new ArrayList<>();
+    
+    for (Character p : map.keySet()) {
+      
+      if (visited.contains(p)) {
+        continue;
+      }
+      
+      List<Character> cluster = new ArrayList<>();
+      dfs(p, map, visited, cluster);
+      System.out.println("Created a new picture cluster " + cluster);
+      
+      clusters.add(cluster);
+    }
+    
+    System.out.println("Clusters : " + clusters);
+  }
+  
+  static void dfs(Character p, Map<Character, List<Character>> graph, 
+                  Set<Character> visited, List<Character> cluster) {
+    
+    if (visited.contains(p)) {
+      return;
+    }
+    
+    System.out.println("dfs called for picture : " + p 
+                       + " cluster: " + cluster);
+    
+    visited.add(p);
+    cluster.add(p);
+    
+    for (Character c : graph.get(p)) {
+      // new picture
+      dfs(c, graph, visited, cluster);
+    }
+    
+    return;  
+  }
+}
