@@ -1,0 +1,68 @@
+
+import java.util.*;
+
+
+/**
+ *
+ https://leetcode.com/problems/sort-colors/
+
+Given an array with n objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white and blue.
+
+Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+
+Note: You are not suppose to use the library's sort function for this problem.
+
+Example:
+
+Input: [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+Follow up:
+
+A rather straight forward solution is a two-pass algorithm using counting sort.
+First, iterate the array counting number of 0's, 1's, and 2's, then overwrite array with total number of 0's, then 1's and followed by 2's.
+Could you come up with a one-pass algorithm using only constant space?
+
+Approach : Three pointers. low, mid and high.
+
+Partition the array into
+
+low to mid (should be all 0s)
+mid to high (ungrouped)
+high to end (should be all 1s)
+
+if mid == 0, swap with low and low++
+if mid == 1, it is good
+if mid == 2, swap with high and high--
+
+ */
+public class DNF {
+
+  public static void main(String[] args) {
+    int[] input = new int[] {0, 1, 2, 1, 1, 2, 2, 0};
+    doDnf(input);
+    // This should print : Array after partitoning : [0, 0, 1, 1, 1, 2, 2, 2]
+    System.out.println("Array after partitoning : " + Arrays.toString(input));
+  }
+
+  private static void doDnf(int[] input) {
+    int low = 0;
+    int mid = 0;
+    int high = input.length - 1;
+
+    while (mid <= high) {
+      if (input[mid] == 0) {
+        swap(input, low++, mid++);
+      } else if (input[mid] == 1) {
+        mid++;
+      } else if (input[mid] == 2) {
+        swap(input, mid, high--);
+      }
+    }
+  }
+
+  private static void swap(int[] input, int i, int j) {
+    int temp = input[i];
+    input[i] = input[j];
+    input[j] = temp;
+  }
+}
