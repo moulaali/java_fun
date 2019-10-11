@@ -29,6 +29,7 @@ public class Solution {
         if (word.equals("DUP")) {
           if (stack.isEmpty()) {
             System.out.println("cannot duplicate an empty stack");
+            return -1;
           }
           
           stack.push(stack.peek());
