@@ -5,15 +5,22 @@ public class Solution {
     public static void main(String[] args) {
 
       String s = "Codility We test coders";
+      System.out.println(crop(s, 14) + " and length " + crop(s, 14).length());
       
-      System.out.println(crop(s, 14));
-    
+      String s2 = "The quick brown fox jumps over the lazy dog";
+      System.out.println(crop(s2, 39) + "and length " + crop(s2, 39).length());
     }
   
     static String crop(String s, int k) {
       String sub = s.substring(0, k);
       
-      if (s.charAt(k + 1) != ' ') {
+      System.out.println("char at k + 1: " + s.charAt(k - 1));
+      
+      if(sub.charAt(k - 1) == ' ') {
+        return sub.substring(0, sub.length() - 1);
+      }
+      
+      if (s.charAt(k) != ' ') {
         // remove chars till previous space
         String[] words = sub.split(" ");
         StringBuilder sb = new StringBuilder();
@@ -21,7 +28,7 @@ public class Solution {
         for (int i = 0; i < words.length - 1; i++) {
           sb.append(words[i]);
           
-          if (i != words.length - 1) {
+          if (i != words.length - 2) {
             sb.append(' ');
           }
         }
