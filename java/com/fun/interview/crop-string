@@ -1,0 +1,36 @@
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+
+      String s = "Codility We test coders";
+      
+      System.out.println(crop(s, 14));
+    
+    }
+  
+    static String crop(String s, int k) {
+      String sub = s.substring(0, k);
+      
+      if (s.charAt(k + 1) != ' ') {
+        // remove chars till previous space
+        String[] words = sub.split(" ");
+        StringBuilder sb = new StringBuilder();
+        
+        for (int i = 0; i < words.length - 1; i++) {
+          sb.append(words[i]);
+          
+          if (i != words.length - 1) {
+            sb.append(' ');
+          }
+        }
+        
+        return sb.toString();
+        
+      }
+      
+      return sub;
+      
+    }
+}
