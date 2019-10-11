@@ -1,0 +1,85 @@
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+      System.out.println("Value is " + wordmachine("13 DUP 4 POP 5 DUP + DUP + -"));  // returns 7
+      System.out.println("Value is " + wordmachine("5 6 + -"));  // returns -1 (i.e. error)
+      System.out.println("Value is " + wordmachine("3 DUP - -"));  // returns -1 (i.e. error)
+    }
+  
+    static int wordmachine(String s) {
+      
+      String[] words = s.split(" ");
+      Stack<Integer> stack = new Stack<>();
+      
+      for (String word : words) {
+        
+        // if number
+        try {
+          int n = Integer.valueOf(word);
+          stack.push(n);
+          System.out.println("Pushed number to stack " + stack);
+          continue;
+        } catch (NumberFormatException nfe) {
+          // not a number
+        }
+        
+        // if dup
+        if (word.equals("DUP")) {
+          if (stack.isEmpty()) {
+            System.out.println("cannot duplicate an empty stack");
+          }
+          
+          stack.push(stack.peek());
+          System.out.println("Duplicated top of stack " + stack);
+          continue;
+        }
+        
+        // pop
+        if (word.equals("POP")) {
+          if (stack.isEmpty()) {
+            System.out.println("cannot pop from empty stack");
+            return -1;
+          }
+          
+          stack.pop();
+          System.out.println("popped : " + stack);
+          continue;
+        }
+        
+        // +
+        if (word.equals("+")) {
+          if (stack.size() < 2) {
+            System.out.println("cannot add. there are less than 2 values");
+            return -1;
+          }
+          
+          int top = stack.pop();
+          stack.push(top + stack.pop());
+          
+          System.out.println("Performed +. " + stack);
+          continue;
+        }
+        
+        if (word.equals("-")) {
+          if (stack.size() < 2) {
+            System.out.println("cannot substract. there are less than 2 values");
+            return -1;
+          }
+          
+          int top = stack.pop();
+          stack.push(top - stack.pop());
+          
+          System.out.println("Performed +. " + stack);
+          continue;
+        }
+      }
+      
+      if (stack.isEmpty()) {
+        return -1;
+      }
+      
+      return stack.pop();
+    }
+}
