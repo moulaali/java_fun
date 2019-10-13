@@ -1,0 +1,67 @@
+import java.util.*;
+import java.util.regex.*;
+
+/**
+
+Compute the max points based on two rules
+
+1/ choose a value and delte all elements and gain points
+2/ also delete n-1 and n+1 and gain no points
+
+*/
+public class Solution {
+
+    public static void main(String[] args) {
+      Integer[] a = {5, 6, 6, 4, 11};
+      List<Integer> l = new ArrayList<>();
+      l.addAll(Arrays.asList(a));
+      
+      System.out.println("Max: " + computeMax(l));
+    }
+  
+    static int computeMax(List<Integer> list) {
+      int max = Integer.MIN_VALUE;
+      
+      for (Integer chosen : list) {
+        // choose a[i] and compute the score
+        int score = compute(new ArrayList<>(list), chosen);
+        max = Math.max(score, max);
+        break;
+      }
+      
+      return max;
+    }
+    
+    static int compute(List<Integer> list, int chosen) {
+      int score = 0;
+      
+      
+      if (list.isEmpty()) {
+        return 0;
+      }
+      
+      ListIterator<Integer> iterator = list.listIterator();
+      
+      while (iterator.hasNext()) {
+        Integer value = iterator.next();
+        
+        // remove chosen values and add to score
+        if (value == chosen) {
+          list.remove(value);
+          score += value;
+          continue;
+        }
+        
+        if ((value == chosen + 1) || (value == chosen - 1)) {
+          list.remove(value);
+        }
+      }
+      
+      score += computeMax(new ArrayList<>(list));
+      
+      System.out.println("Score computed after choosing " + chosen + 
+                         ": " + score);
+      
+      return score;
+    }
+}
