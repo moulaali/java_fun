@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.regex.*;
 
 /**
 
@@ -8,11 +7,22 @@ Compute the max points based on two rules
 1/ choose a value and delte all elements and gain points
 2/ also delete n-1 and n+1 and gain no points
 
+Approach:
+
+Compute recursively the possiblities. Remember the subproblem
+maximum's in a hashmap so that we don't recompute a solved
+subproblem. Basically dynamic programming with memoziation.
+
 */
 public class Solution {
 
+    // memoize so that we don't recompute overlapping subproblems
+    static Map<List<Integer>, Integer> memoizeTable = new HashMap<>();
+  
     public static void main(String[] args) {
-      Integer[] a = {5, 6, 6, 4, 11};
+      // Integer[] a = {5, 6, 6, 4, 11};  // 27
+      Integer[] a = {1, 2, 1, 3, 2, 3};  // 8
+      
       List<Integer> l = new ArrayList<>();
       l.addAll(Arrays.asList(a));
       
@@ -20,22 +30,30 @@ public class Solution {
     }
   
     static int computeMax(List<Integer> list) {
-      int max = Integer.MIN_VALUE;
+      
+      // reuse if computed already
+      if (memoizeTable.containsKey(list)) {
+        System.out.println("list " + list + "is already computed with max " + 
+                          memoizeTable.get(list));
+        return memoizeTable.get(list);
+      }
+      
+      int max = 0;
       
       for (Integer chosen : list) {
         // choose a[i] and compute the score
         int score = compute(new ArrayList<>(list), chosen);
         max = Math.max(score, max);
-        break;
       }
+      
+      memoizeTable.put(list, max);
       
       return max;
     }
     
     static int compute(List<Integer> list, int chosen) {
       int score = 0;
-      
-      
+    
       if (list.isEmpty()) {
         return 0;
       }
@@ -47,21 +65,20 @@ public class Solution {
         
         // remove chosen values and add to score
         if (value == chosen) {
-          list.remove(value);
+          iterator.remove();
           score += value;
           continue;
         }
         
         if ((value == chosen + 1) || (value == chosen - 1)) {
-          list.remove(value);
+          iterator.remove();
         }
       }
       
       score += computeMax(new ArrayList<>(list));
       
       System.out.println("Score computed after choosing " + chosen + 
-                         ": " + score);
-      
+                         " and list" + list + " : " + score);
       return score;
     }
 }
