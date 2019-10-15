@@ -1,0 +1,62 @@
+import java.util.*;
+
+/**
+
+Consider N coins aligned in a row. Each coin is showing either heads or tails. The adjacency of these coins is the number of pairs of adjacent coinst showing the same face.Return the maximum possible adjacency that can be obtained by reversing one coin, one of the coinst must be reversed
+
+for example i have
+
+1 1 0 1 0 0 
+and after change third we get 1 1 1 1 0 0 so we have 4 pairs.
+
+Approach:
+
+1/ Find initial set of pairs (i,e. a[i] == a[i+1])
+2/ Now go through each coin and find the impact/delta of flipping that.
+   - if i flip and my left neighbor is not same, the delta is +1 or it is -1 (to original adjacency)
+   - if i flip and my right neight is not same, the delta is +1 else it is -1
+   
+   Track the max value of positive delta
+3/ so net adjancency = initial_adjancey + delta (could be negative as well. ex: [0, 0, 0])
+   
+*/
+public class Solution {
+
+  public static void main(String[] args) { 
+    int[] A = {1, 1, 0, 1, 0, 0, 0 }; 
+    int n = A.length; 
+    int result = 0; 
+
+    for (int i = 0; i < n - 1; i++) { 
+      if (A[i] == A[i + 1]) 
+        result = result + 1; 
+    } 
+
+    System.out.println("result: " + result);
+
+    int r = 0; 
+
+    for (int i = 0; i < n; i++) { 
+      int count = 0; 
+
+      if (i > 0) { 
+        if (A[i - 1] != A[i]) 
+          count = count + 1; 
+        else 
+          count = count - 1; 
+      } 
+
+      if (i < n - 1) { 
+        if (A[i + 1] != A[i]) 
+          count = count + 1; 
+        else 
+          count = count - 1; 
+      } 
+
+      r = Math.max(r, count); 
+
+      System.out.println("Processed " + A[i] + " Count " + count + " max: " + r);
+    } 
+    System.out.println(result + r); 
+  }
+}
