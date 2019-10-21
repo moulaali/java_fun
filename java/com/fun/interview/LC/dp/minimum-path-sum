@@ -1,0 +1,73 @@
+import java.util.*;
+
+/**
+
+Minimum Path Sum
+
+https://leetcode.com/problems/minimum-path-sum/
+
+Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
+
+Note: You can only move either down or right at any point in time.
+
+Example:
+
+Input:
+[
+  [1,3,1],
+  [1,5,1],
+  [4,2,1]
+]
+Output: 7
+Explanation: Because the path 1→3→1→1→1 minimizes the sum.
+
+*/
+public class Solution {
+
+  public static void main(String[] args) { 
+    int[][] a = {
+       {1, 3, 1},
+       {1, 5, 1},
+       {4, 2, 1}
+    };  // 7
+
+    char[][] path = new char[a.length][a[0].length];
+    
+    int[] dp = new int[a[0].length];
+    
+    // fill the first row; only left is an option
+    dp[0] = a[0][0];
+    
+    
+    for (int i = 1; i < a[0].length; i++) {
+      dp[i] = dp[i -1] + a[0][i];
+      path[0][i] = '<';
+    }
+    System.out.println("dp first row " + Arrays.toString(dp));
+    
+    // fill top to bottom and left to right
+    for (int i = 1; i < a.length; i++) {
+      for (int j = 0; j < a[0].length; j++) {
+        
+        int left = (j == 0 ? Integer.MAX_VALUE : (dp[j - 1] + a[i][j]));
+        int top = dp[j] + a[i][j];
+        
+        if (left < top) {
+          dp[j] = left;
+          path[i][j] = '<';
+        } else {
+          dp[j] = top;
+          path[i][j] = '^';
+        }
+        
+      }
+    }
+    
+    System.out.println("Min path sum : " + dp[a[0].length - 1]);
+    System.out.println("Path matrix : ");
+    
+    for (int i = 0; i < a.length; i++) {
+      System.out.println(Arrays.toString(path[i]));
+    }
+  }
+}
