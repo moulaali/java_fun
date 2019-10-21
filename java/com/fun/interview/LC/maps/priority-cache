@@ -1,0 +1,98 @@
+/**
+
+Implement a cache with lowest rank/priority eviction policy
+
+Approach: Idea is to use a min-heap to maintain the lowest
+rank key on top. store the key, value pairs in regular map.
+
+*/
+
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Solution {
+
+  public static void main(String[] args) { 
+    PriorityCache cache = new PriorityCache(3);
+    
+    System.out.println(cache.get("3"));
+    System.out.println(cache.get("4"));
+    System.out.println(cache.get("5"));
+    System.out.println(cache.get("6"));
+    System.out.println(cache.get("7"));
+  }
+}
+
+class PriorityCache {
+  Map<String, String> cache;
+  int capacity;
+  Source source;
+  PriorityQueue<HeapObj> pq;
+  
+  static final Comparator<HeapObj> HeapObjComparator = (h1, h2) -> {
+    return (h1.rank - h2.rank);
+  };
+  
+  PriorityCache(int capacity) {
+    this.capacity = capacity;
+    this.cache = new HashMap<>();
+    this.source = new Source();
+    
+    pq = new PriorityQueue<>(HeapObjComparator);
+  }
+  
+  String get(String key) {
+    String value = cache.get(key);
+    
+    if (value != null) {
+      return value;
+    }
+    
+    SourceEntry sourceValue = source.get(key);
+    System.out.println("Fetched from source. key=" + key + " rank " 
+                       + sourceValue.rank);
+    
+    if (cache.size() >= capacity) {
+      // evict lowest rank
+      HeapObj lowestRank = pq.remove();
+      cache.remove(lowestRank.key);
+      
+      System.out.println("Evicted lowest rank " + lowestRank.rank 
+                         + " key " + lowestRank.key);
+    }
+    
+    cache.put(key, sourceValue.value);
+    pq.offer(new HeapObj(key, sourceValue.rank));
+    
+    return sourceValue.value;
+  }
+}
+
+class HeapObj {
+  String key;
+  int rank;
+  
+  HeapObj(String key, int rank) {
+    this.key = key;
+    this.rank = rank;
+  }
+}
+
+class Source {
+  
+  SourceEntry get(String key) {
+    int rank = ThreadLocalRandom.current().nextInt(1, 101);
+    return new SourceEntry(key + "_value", rank);
+  }
+  
+}
+
+class SourceEntry {
+  String value;
+  int rank;
+  
+  SourceEntry(String value, int rank) {
+    this.value = value;
+    this.rank = rank;
+  }
+}
