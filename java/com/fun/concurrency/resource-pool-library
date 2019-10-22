@@ -1,0 +1,213 @@
+import java.util.concurrent.*;
+import java.time.*;
+
+/**
+ * 
+   A simple resource pool that handles following cases
+   
+   1/ Safely returns resources with unbounded wait
+   2/ Drops any resources that blocked for too long. 
+   3/ Refills the pool to fill-in any resources we dropped due to blocking.
+   
+ *
+ * Approach:
+     Initialize a concurrent blocking queue with N resources. Everytime, we take(), 
+     add it to assigned concurrent map. When we offer() back, move it back to
+     assigned. If a client holds/blocks the resource, we simply ignore it and
+     refill with another duplicate.
+ */
+public class ResourcePool {
+
+  public static void main(String[] args) throws InterruptedException {
+    ResourcePool resourcePool = new ResourcePool(4);
+
+    Thread client1 = new Thread(new PoolClient(resourcePool));
+    Thread client2 = new Thread(new PoolClient(resourcePool));
+    Thread client3 = new Thread(new PoolClient(resourcePool));
+    
+    Thread refiller = new Thread(new Refiller(resourcePool));
+    
+    client1.start();
+    client2.start();
+    client3.start();
+    refiller.start();
+    
+    System.out.println("Main thread to sleep for 4 sec");
+    Thread.sleep(10 * 1000);
+    
+    client1.interrupt();
+    client2.interrupt();
+    client3.interrupt();
+    refiller.interrupt();
+    
+    return;
+  }
+
+  static class ResourcePool {
+
+    private final BlockingQueue<Resource> available;
+    private final ConcurrentHashMap<AssignedResource, Boolean> assigned;
+    private final int size;
+
+    ResourcePool(int size) {
+      available = new LinkedBlockingQueue<>();
+      assigned = new ConcurrentHashMap<>();
+      this.size = size;
+
+      // init the pool
+      for (int i = 0; i < size; i++) {
+        available.add(new Resource(new StringBuilder(), i + 1));
+      }
+      
+      System.out.println("Initialized the pool with " + size + " objects");
+    }
+
+    Resource get() throws InterruptedException {
+      Resource toReturn = available.take();
+      assigned.put(new AssignedResource(toReturn, Instant.now()), true);
+      
+      return toReturn;
+    }
+
+    void offer(Resource resource) {
+      if (!assigned.containsKey(resource)) {
+        System.out.println("Unknown resource " + resource.id + " is returned. ignored");
+        return;
+      }
+      
+      assigned.remove(resource);
+      if (available.offer(resource)) {
+        System.out.println("Offer accepted for resource " + resource.id);
+      } else {
+        System.out.println("Offer rejected for resource (out of space ?) " + resource.id);
+      }
+    }
+    
+    void add(Resource resource) {
+      if (available.offer(resource)) {
+        System.out.println("Added a new resource to pool " + resource.id);
+      } else {
+        System.out.println("Addition rejected for resource (out of space ?) " + resource.id);
+      }
+    }
+    
+    public void refill() {
+      int availableCount = available.size();
+      int blockedThresholdMs = 1000;
+      
+      // remove all blocked
+      int blocked = 0;
+      for (AssignedResource assignedResource : assigned.keySet()) {
+        Duration holdingFor = Duration.between(assignedResource.ts, Instant.now());
+        if (holdingFor.toMillis() > blockedThresholdMs) {
+          System.out.println("Resource " + assignedResource.resource.id + " is blocked (>1s). "
+                             +" Dropping them from pool");
+          assigned.remove(assignedResource);
+          blocked++;
+        }
+      }
+      System.out.println("Removed/Dropped " + blocked + " number of resources");
+      
+      // Check how many we need to fill
+      int refresh = (size - (availableCount + assigned.size()));
+      System.out.println("Refilling with " + refresh + " resources");
+      
+      for (int i = 0; i < refresh; i++) {
+        add(new Resource(new StringBuilder(),  ThreadLocalRandom.current().nextInt(1, 1000)));
+      }
+      System.out.println("Current effective pool size is " + (availableCount + assigned.size()));
+    }
+  }
+
+  static class Resource {
+    StringBuilder sb;
+    long id;
+
+    Resource(StringBuilder sb, long id) {
+      this.sb = sb;
+      this.id = id;
+    }
+  }
+
+  // Holds info about resource and 
+  static class AssignedResource {
+    
+    Resource resource;
+    Instant ts;
+    
+    AssignedResource(Resource resource, Instant ts) {
+      this.resource = resource;
+      this.ts = ts;
+    }
+  }
+  
+  static class PoolClient implements Runnable {
+
+    private final ResourcePool resourcePool;
+    long id;
+
+    PoolClient(ResourcePool resourcePool) {
+      this.resourcePool = resourcePool;
+    }
+
+    public void run() {
+      id = Thread.currentThread().getId();
+      System.out.println("Started thread : " + id);
+      
+      while (true) {
+        try {
+          // sleep
+          int sleepForMs = ThreadLocalRandom.current().nextInt(1, 100);
+          System.out.println("Thread " + id + " going to sleep for " + sleepForMs);
+          Thread.sleep(sleepForMs);
+
+          // wake up and grab a resource
+          System.out.println("Thread " + id + " woken up. Getting resource");
+          Resource resource = resourcePool.get();
+          System.out.println("Thread " + id + " Got resource " + resource.id);
+
+          // Use it
+          int useForMs = ThreadLocalRandom.current().nextInt(1, 100);
+          Thread.sleep(useForMs);
+
+          // Return
+          // resourcePool.offer(resource);
+        } catch (InterruptedException ie){
+          System.out.println("Thread " + id + " Interrupted. Goodbye ! ");
+          break;
+        }
+      }
+    }
+  }
+  
+  // Periodically refills the pool
+  static class Refiller implements Runnable {
+
+    private final ResourcePool resourcePool;
+
+    Refiller(ResourcePool resourcePool) {
+      this.resourcePool = resourcePool;
+    }
+
+    public void run() {
+      long id = Thread.currentThread().getId();
+      System.out.println("Started Refiller thread : " + id);
+      
+      while (true) {
+        try {
+          // sleep
+          int sleepForMs = 2 * 1000;
+          System.out.println("Refiller Thread " + id + " going to sleep for " + sleepForMs);
+          Thread.sleep(sleepForMs);
+
+          // wake up and refill
+          System.out.println("Refiller Thread " + id + " woken up. Checking and refilling ");
+          resourcePool.refill();
+        } catch (InterruptedException ie){
+          System.out.println("Refiller Thread Interrupted. Goodbye !");
+          break;
+        }
+      }
+    }
+  }
+}
