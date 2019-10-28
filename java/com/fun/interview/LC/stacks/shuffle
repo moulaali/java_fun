@@ -1,0 +1,51 @@
+import java.util.*;
+
+/**
+Shuffle cards as per following rules
+
+- First card to table on the top of deck and second
+card to back of deck in hand. then repeat the same.
+
+Approach: Simple stack to hold onTable and queue to
+hold inHand cards. 
+
+*/
+public class Solution {
+  public static void main(String[] args) {
+    Integer[] a = {1, 2, 3, 4, 5};
+    
+    System.out.println("Shuffled output " + 
+                       Arrays.toString(shuffle(a)));
+  }
+  
+  static Integer[] shuffle(Integer[] a) {
+    Stack<Integer> onTable = new Stack<>();
+    Queue<Integer> inHand = new LinkedList<>();
+    
+    Integer[] shuffled = new Integer[a.length];
+    
+    inHand.addAll(Arrays.asList(a));
+    
+    boolean stack = true;
+    while(!inHand.isEmpty()) {
+      
+      if (stack) {
+        onTable.push(inHand.poll());
+      } else {
+        inHand.offer(inHand.poll());
+      }
+      
+      stack = !stack;
+    }
+    
+    int i = 0;
+    while (!onTable.isEmpty()) {
+      shuffled[i++] = onTable.pop();
+    }
+    
+    return shuffled;
+  }
+}
+
+
+
