@@ -1,0 +1,95 @@
+import java.util.*;
+
+/**
+
+https://leetcode.com/problems/shortest-word-distance-ii/
+
+Design a class which receives a list of words in the constructor, and implements a method that takes two words word1 and word2 and return the shortest distance between these two words in the list. Your method will be called repeatedly many times with different parameters. 
+
+Example:
+Assume that words = ["practice", "makes", "perfect", "coding", "makes"].
+
+Input: word1 = “coding”, word2 = “practice”
+Output: 3
+Input: word1 = "makes", word2 = "coding"
+Output: 1
+Note:
+You may assume that word1 does not equal to word2, and word1 and word2 are both in the list.
+
+Approach :
+---------
+
+Preprocess and compute indices of each word in a map.
+For a given pair of words, the problem becomes find the two
+indices such that the absolute difference between the indices
+is minimum.
+
+To find the min difference between these sorted indices, we
+have two options. do binary search for each index and compute
+the diff between the neighbors. This is O(nlogn).
+
+Better approach to find delta between two sorted arrays is to
+use two pointers. Find the diff and move the smallest value one.
+Their is no point in moving the larger one since the delta will
+be high.
+
+*/
+public class Solution {
+  public static void main(String[] args) throws Exception {
+    
+    String[] words = {
+      "practice",
+      "makes",
+      "perfect",
+      "coding",
+      "makes"
+    };
+    
+    // Pre-process to fetch indixes
+    Map<String, List<Integer>> indices = new HashMap<>();
+    
+    for (int i = 0; i < words.length; i++) {
+      indices.putIfAbsent(words[i], new ArrayList<>());
+      indices.get(words[i]).add(i);
+    }
+    
+    System.out.println("Word Indices map " + indices);
+    
+    System.out.println("min distance between coding and practice "
+                     + getMinDistance("coding", "practice", indices));
+    System.out.println("min distance between coding and makes "
+                 + getMinDistance("makes", "coding", indices));
+  }
+  
+  static int getMinDistance(
+    String word1, String word2, Map<String, List<Integer>> indices)
+    throws Exception {
+    List<Integer> indicesForWord1 = indices.get(word1);
+    List<Integer> indicesForWord2 = indices.get(word2);
+    
+    if (indicesForWord1 == null || indicesForWord2 == null) {
+      throw new Exception("One of the input words is not found" +
+                          word1 + "," + word2);
+    }
+    
+    // find shortest delta between indices1 and indices2
+    int i = 0, j = 0;
+    
+    int min = Integer.MAX_VALUE;
+    while(i < indicesForWord1.size() &&
+          j < indicesForWord2.size()) {
+      
+      int diff = Math.abs(
+        indicesForWord1.get(i) - indicesForWord2.get(j));
+      min = Math.min(diff, min);
+      
+      if (indicesForWord1.get(i) < indicesForWord2.get(j)) {
+        i++;
+      } else {
+        j++;
+      }
+    }
+    
+    return min;
+  }
+}
