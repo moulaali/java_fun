@@ -1,0 +1,81 @@
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Arrays;
+
+class Main {
+
+  public static void main(String[] args) {
+    // "x__ooo___", {1 -> reachable and winner and draw : terminal node}
+    // 2 -> reachable, one more turn
+    Map<String, Integer> m = new HashMap<String, Integer>(); 
+
+    // isWinning
+    isWinning("XXXX______");
+
+    // preprocess and build map
+    char turn = 'X';
+    String bp = "_________";
+    preprocess(m, turn, bp.toCharArray(), 2);
+    System.out.println("Preprocess done:. Reachability map" + m);
+  }
+
+  static void preprocess(Map<String, Integer> m, char turn, char[] bp,int depth)
+  {
+      depth--;
+      if (depth == 0) {
+        return;
+      }
+
+      // if terminal
+      boolean isTerminal = checkIfTerminal(bp);
+      if (isWinning(bp, (turn == 'X' ? 'O': 'X')) {
+        map.putIfAbsent(new String(bp), 1);
+        return;
+      }
+
+      // not terminal
+      m.putIfAbsent(new String(bp), 2);
+      for (int i = 0; i < 9; i++) {
+        if (bp[i] == '_') {
+          bp[i] = (turn == 'X' ? 'X' : 'O');
+          System.out.println("Reached a new board position:" + Arrays.toString(toGrid(bp));
+          preprocess(m, (turn == 'X' ? 'O' : 'X'), bp, depth);
+          bp[i] = '_';
+        }
+      }
+
+      return;
+  }
+
+  boolean isXWinning(char[] bp) {
+    char[][] grid = toGrid(bp);
+    
+    // row wise
+    if (grid[0].toString().equals("XXX")
+    || grid[1].toString().equals("XXX")
+    || grid[2].toString().equals("XXX")) {
+      return true;
+    }
+
+    // col wise
+
+
+    // diag win
+  }
+
+  char[][] toGrid(char[] bp) {
+    char[][] grid = new char[3][3];
+
+    char[0][0] = bp[0];
+    char[0][1] = bp[1];
+    char[0][2] = bp[2];
+
+    char[1][0] = bp[3];
+    char[1][1] = bp[4];
+    char[1][2] = bp[5];
+
+    char[2][0] = bp[6];
+    char[2][1] = bp[7];
+    char[2][2] = bp[8];
+  }
+}
